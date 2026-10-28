@@ -100,7 +100,7 @@ Controles: <b>← →</b> giran · <b>↑</b> acelera · <b>ESPACIO</b> dispara.
 Lo que ves: conexión y entretenimiento. Lo que nadie te cuenta: <b>FOMO</b>, <b>comparación social</b>, <b>fragmentación de la atención</b>, <b>burbujas de filtro</b> y <b>consumismo impulsivo</b>.
 El precio real de lo gratis lo pagas con tu salud mental y tu autonomía.</div>
 <div class="how"><b>Objetivo:</b> atraviesa <b>20 niveles</b> con 3 temas visuales rotativos (Nocturno, Halloween, Aula de Clases).
-Al final del nivel hay <b>4 tuberías separadas (A, B, C, D)</b>. Lee la pregunta y salta exactamente sobre la correcta.
+Al final del nivel hay <b>4 tuberías pequeñas y separadas (A, B, C, D)</b>. Lee la pregunta y salta exactamente sobre la correcta.
 ⚠️ <b>¡Cuidado!</b> Hay <b>enemigos patrullando</b>. Si los tocas, pierdes una vida.</div>
 <div class="arena">
 <div class="qbox"><h3 id="plQ">Cargando nivel…</h3><div class="opts" id="plOpts"></div></div>
@@ -395,7 +395,7 @@ $("astStart").onclick=()=>{ if(!ast.started||ast.lives<=0)astReset(); ast.starte
 $("astReset").onclick=astReset;
 
 /* =========================================================
-   MÓDULO 3 — PLATAFORMAS (TUBOS SEPARADOS Y BAJOS)
+   MÓDULO 3 — PLATAFORMAS (TUBOS MUY PEQUEÑOS)
    ========================================================= */
 const lctx = ctxOf("plCanvas");
 const TILE = 30;
@@ -460,12 +460,10 @@ const MAP_ENEMIES = [
   [{x: 600, y: 9*T, range: 150, speed: 1.2}, {x: 1200, y: 9*T, range: 100, speed: 1.3}, {x: 1800, y: 9*T, range: 130, speed: 1.0}]
 ];
 
-// ====== NUEVA CONFIGURACIÓN DE TUBERÍAS ======
-// 4 tuberías separadas al final del nivel
-// Columnas: 64, 68, 72, 76 (separación de 4 columnas = 120px entre cada una)
+// ====== TUBERÍAS MUY PEQUEÑAS ======
 const PIPE_COLUMNS = [64, 68, 72, 76];
-const PIPE_ROW = 8; // Fila donde se ubican las tuberías (sobre el suelo)
-const PIPE_HEIGHT = TILE; // Altura de 1 tile (30px) en lugar de 2 tiles (60px)
+const PIPE_ROW = 8;
+const PIPE_HEIGHT = 18; // MUY BAJO: solo 18px (antes 30px)
 
 const pl = {
   running:false, started:false, score:0, lives:15, level:1,
@@ -478,7 +476,6 @@ function plParseMap(mapIdx){
   pl.tiles = []; pl.exits = []; pl.enemies = [];
   let spawnX = 60, spawnY = 300;
   
-  // Parsear mapa (sin las letras abcd, se colocan automáticamente)
   for(let r=0; r<raw.length; r++){
     for(let c=0; c<raw[r].length; c++){
       const char = raw[r][c], x = c * TILE, y = r * TILE;
@@ -488,7 +485,6 @@ function plParseMap(mapIdx){
     }
   }
   
-  // ====== COLOCAR 4 TUBERÍAS SEPARADAS AL FINAL DEL NIVEL ======
   const letters = ["A", "B", "C", "D"];
   PIPE_COLUMNS.forEach((col, i) => {
     const x = col * TILE;
@@ -497,15 +493,13 @@ function plParseMap(mapIdx){
       x: x,
       y: y,
       w: TILE,
-      h: PIPE_HEIGHT, // AHORA MÁS BAJO (30px en lugar de 60px)
+      h: PIPE_HEIGHT,
       letter: letters[i],
       id: i
     });
-    // Suelo de soporte debajo de la tubería
-    pl.tiles.push({x: x, y: y + PIPE_HEIGHT, w: TILE, h: TILE, type:'ground'});
+    pl.tiles.push({x: x, y: y + PIPE_HEIGHT, w: TILE, h: TILE - PIPE_HEIGHT, type:'ground'});
   });
   
-  // Generar enemigos
   const enemyDefs = MAP_ENEMIES[mapIdx];
   enemyDefs.forEach(def => {
     pl.enemies.push({
@@ -624,15 +618,14 @@ function stepPl(){
     $("plMsg").textContent = "¡Caíste! Te quedan " + pl.lives + " vidas.";
   }
   
-  // ====== COLISIÓN CON TUBERÍAS BAJAS ======
+  // ====== COLISIÓN CON TUBERÍAS MUY PEQUEÑAS ======
   if(p.invulnerable <= 0){
     for(let ex of pl.exits){
-      // Hitbox ajustado al nuevo tamaño bajo de las tuberías
       const pipeHitbox = {
-        x: ex.x + 3,
+        x: ex.x + 4,
         y: ex.y,
-        w: ex.w - 6,
-        h: 14 // Reducido de 18 a 14 para coincidir con la nueva altura
+        w: ex.w - 8,
+        h: 10 // MUY PEQUEÑO: solo 10px de alto
       };
       
       if(checkCollision(p, pipeHitbox)){
@@ -791,23 +784,20 @@ function drawTiles(){
 function drawExits(){
   const theme = pl.theme;
   pl.exits.forEach(ex => {
-    // ====== DIBUJO DE TUBERÍA BAJA (30px de alto) ======
-    // Cuerpo de la tubería (solo 1 tile de alto)
+    // ====== DIBUJO DE TUBERÍA MUY PEQUEÑA (18px de alto) ======
     lctx.fillStyle = theme.pipe;
-    lctx.fillRect(ex.x + 2, ex.y + 8, ex.w - 4, ex.h - 8);
-    // Borde superior (más delgado para que quepa)
+    lctx.fillRect(ex.x + 2, ex.y + 6, ex.w - 4, ex.h - 6);
     lctx.fillStyle = theme.pipeLight;
-    lctx.fillRect(ex.x, ex.y, ex.w, 10);
+    lctx.fillRect(ex.x, ex.y, ex.w, 7);
     lctx.strokeStyle = theme.pipeDark;
-    lctx.lineWidth = 2;
-    lctx.strokeRect(ex.x, ex.y, ex.w, 10);
-    lctx.strokeRect(ex.x + 2, ex.y + 8, ex.w - 4, ex.h - 8);
-    // Letra
+    lctx.lineWidth = 1.5;
+    lctx.strokeRect(ex.x, ex.y, ex.w, 7);
+    lctx.strokeRect(ex.x + 2, ex.y + 6, ex.w - 4, ex.h - 6);
     lctx.fillStyle = "#fff";
-    lctx.font = "bold 14px Arial";
+    lctx.font = "bold 11px Arial";
     lctx.textAlign = "center";
     lctx.textBaseline = "middle";
-    lctx.fillText(ex.letter, ex.x + ex.w/2, ex.y + 5);
+    lctx.fillText(ex.letter, ex.x + ex.w/2, ex.y + 3.5);
   });
 }
 
