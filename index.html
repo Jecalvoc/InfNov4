@@ -87,7 +87,7 @@ Esas trampas se llaman <b>dark patterns</b>: deslizamiento infinito, recompensas
 Controles: <b>← →</b> giran · <b>↑</b> acelera · <b>ESPACIO</b> dispara. Disparar a un asteroide equivocado te cuesta una vida.</div>
 <div class="arena">
 <div class="qbox"><h3 id="astQ"></h3><div class="opts" id="astOpts"></div></div>
-<div class="hud">⭐ <span id="astScore">0</span> &nbsp; ❤️ <span id="astLives">3</span></div>
+<div class="hud">⭐ <span id="astScore">0</span> &nbsp; ❤️ <span id="astLives">15</span></div>
 <canvas id="astCanvas" width="600" height="480"></canvas>
 <div class="msg" id="astMsg">Pulsa INICIAR.</div>
 <div><button class="btn" id="astStart">▶ Iniciar / Pausar</button><button class="btn" id="astReset">↻ Reiniciar</button></div>
@@ -108,7 +108,7 @@ Colisión estricta con las tuberías: debes entrar exactamente por la parte supe
 <div class="hud">
 🗺️ Nivel <span id="plLevel">1</span>/20 &nbsp; 
 <span id="plTheme" class="theme-label" style="background:#2c3e50">🌙 Nocturno</span> &nbsp;
-⭐ <span id="plScore">0</span> &nbsp; ❤️ <span id="plLives">3</span>
+⭐ <span id="plScore">0</span> &nbsp; ❤️ <span id="plLives">15</span>
 </div>
 <canvas id="plCanvas" width="800" height="450"></canvas>
 <div class="msg" id="plMsg">Pulsa INICIAR para comenzar la aventura.</div>
@@ -242,7 +242,7 @@ function drawGhosts() {
     pctx.restore();
   });
 }
-const pac = {started:false, running:false, over:false, score:0, lives:3, qi:0, deck:[], p:null, pellets:[], want:{x:0,y:0}, correct:"A"};
+const pac = {started:false, running:false, over:false, score:0, lives:15, qi:0, deck:[], p:null, pellets:[], want:{x:0,y:0}, correct:"A"};
 function pacSetMsg(t){ $("pacMsg").textContent=t; }
 function pacPlacePellets(){
   const pool=shuffle(freeCells.filter(([c,r])=>Math.abs(c-1)+Math.abs(r-1)>4));
@@ -259,9 +259,9 @@ function pacLoadQuestion(){
   pacPlacePellets(); $("pacLevel").textContent=pac.qi+1;
 }
 function pacReset(){
-  Object.assign(pac,{started:true,running:false,over:false,score:0,lives:3,qi:0,deck:[],want:{x:0,y:0}});
+  Object.assign(pac,{started:true,running:false,over:false,score:0,lives:15,qi:0,deck:[],want:{x:0,y:0}});
   pac.p=center(1,1); Object.assign(pac.p,{c:1,r:1,dir:{x:0,y:0},moving:false,t:0});
-  initGhosts(); pacLoadQuestion(); $("pacScore").textContent=0; $("pacLives").textContent=3;
+  initGhosts(); pacLoadQuestion(); $("pacScore").textContent=0; $("pacLives").textContent=15;
   $("pacStart").textContent="▶ Iniciar"; pacSetMsg("Analiza la pregunta. Come solo la letra correcta y evita a los fantasmas."); drawPac();
 }
 function pacTryDir(name){ const d={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[name]; if(d) pac.want=d; }
@@ -344,7 +344,7 @@ const AST_Q=[
  {q:"¿Qué define a una SUSCRIPCIÓN OCULTA?",o:["Un proceso donde es muy fácil suscribirse pero casi imposible cancelar","Una suscripción mensual a una revista","Un canal privado de contenido","Una membresía deportiva con beneficios claros"],c:0},
  {q:"¿En qué consiste una AUDITORÍA DE PRIVACIDAD?",o:["Borrar todas las aplicaciones","Desconectarte completamente de internet","Revisar y ajustar sistemáticamente los permisos y configuraciones de tus apps","Cambiar tu nombre de usuario"],c:2}
 ];
-const ast={running:false,started:false,score:0,lives:3,qi:0,q:null,ship:null,rocks:[],shots:[]};
+const ast={running:false,started:false,score:0,lives:15,qi:0,q:null,ship:null,rocks:[],shots:[]};
 function astLoad(){
   ast.q=AST_Q[ast.qi%AST_Q.length];
   const order=shuffle([0,1,2,3]),L=["A","B","C","D"];
@@ -354,9 +354,9 @@ function astLoad(){
   ast.rocks=L.map((l,i)=>({l,x:90+i*140,y:70+Math.random()*120,dx:(Math.random()-.5)*1.6,dy:(Math.random()-.5)*1.2,r:32}));
 }
 function astReset(){
-  Object.assign(ast,{running:false,started:false,score:0,lives:3,qi:0,shots:[]});
+  Object.assign(ast,{running:false,started:false,score:0,lives:15,qi:0,shots:[]});
   ast.ship={x:300,y:400,a:0,vx:0,vy:0}; astLoad();
-  $("astScore").textContent=0; $("astLives").textContent=3; $("astMsg").textContent="Pulsa INICIAR."; drawAst();
+  $("astScore").textContent=0; $("astLives").textContent=15; $("astMsg").textContent="Pulsa INICIAR."; drawAst();
 }
 function stepAst(){
   const s=ast.ship;
@@ -410,7 +410,6 @@ const PL_Q = [
  {q:"¿Qué busca el CONSUMISMO IMPULSIVO en las apps?",o:["Ayudarte a ahorrar dinero","Explotar tu impulsividad mediante dark patterns para generar ventas no planificadas","Enseñarte educación financiera","Mostrarte solo productos de alta calidad"],c:1}
 ];
 
-// ====== SISTEMA DE TEMAS VISUALES ======
 const THEME_NIGHT = {
   name: "🌙 Nocturno",
   color: "#2c3e50",
@@ -466,7 +465,6 @@ function getTheme(level) {
   return THEME_CLASSROOM;
 }
 
-// ====== MAPAS (5 diseños base que se repiten con diferentes temas) ======
 const MAP_LAYOUTS = [
   ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","              B   B                 B   B                                       ","             B B B B               B B B B                                      ","                                                                                ","           B           B                   B                                    ","          B B         B B                 B B                                   ","S      B   B       B   B       B       B   B               a  b  c  d          ","################################################################################"],
   ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B   B   B   B   B   B   B   B   B                                   ","       B B B B B B B B B B B B B B B B B B B                                    ","                                                                                ","      B                       B                       B                         ","     B B                     B B                     B B                        ","S  B   B       B   B       B   B       B   B       B   B   a  b  c  d          ","################################################################################"],
@@ -475,7 +473,6 @@ const MAP_LAYOUTS = [
   ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","                                                                                ","           B             B             B             B                          ","          B B           B B           B B           B B                         ","         B   B         B   B         B   B         B   B                        ","        B     B       B     B       B     B       B     B                       ","S     B       B     B       B     B       B     B       B   a  b  c  d         ","################################################################################"]
 ];
 
-// Posiciones de enemigos por mapa (x en píxeles, plataformaY = fila donde caminan)
 const MAP_ENEMIES = [
   [{x: 400, y: 9*T, range: 120, speed: 1.2}, {x: 900, y: 9*T, range: 150, speed: 1.0}, {x: 1400, y: 9*T, range: 100, speed: 1.3}],
   [{x: 350, y: 9*T, range: 100, speed: 1.1}, {x: 800, y: 9*T, range: 130, speed: 1.2}, {x: 1300, y: 9*T, range: 110, speed: 1.0}],
@@ -485,7 +482,7 @@ const MAP_ENEMIES = [
 ];
 
 const pl = {
-  running:false, started:false, score:0, lives:3, level:1,
+  running:false, started:false, score:0, lives:15, level:1,
   tiles:[], exits:[], enemies:[], correctExit:"A",
   p:null, cam:0, frame:0, theme:THEME_NIGHT
 };
@@ -509,7 +506,6 @@ function plParseMap(mapIdx){
     }
   }
   
-  // Generar enemigos del mapa actual
   const enemyDefs = MAP_ENEMIES[mapIdx];
   enemyDefs.forEach(def => {
     pl.enemies.push({
@@ -540,10 +536,10 @@ function plLoadQuestion(){
 }
 
 function plReset(){
-  Object.assign(pl, {running:false, started:false, score:0, lives:3, level:1});
+  Object.assign(pl, {running:false, started:false, score:0, lives:15, level:1});
   plParseMap(0);
   plLoadQuestion();
-  $("plScore").textContent = 0; $("plLives").textContent = 3;
+  $("plScore").textContent = 0; $("plLives").textContent = 15;
   $("plMsg").textContent = "Pulsa INICIAR. 20 niveles te esperan con 3 temas distintos.";
   drawPl();
 }
@@ -557,11 +553,9 @@ function stepEnemies(){
     if(!e.alive) return;
     e.x += e.vx;
     
-    // Detectar borde de plataforma o límite de rango
     const feetY = e.y + e.h + 2;
     const checkX = e.vx > 0 ? e.x + e.w + 2 : e.x - 2;
     
-    // Verificar si hay suelo debajo del próximo paso
     let hasFloor = false;
     for(let t of pl.tiles){
       if(checkX >= t.x && checkX <= t.x + t.w && feetY >= t.y && feetY <= t.y + t.h){
@@ -569,7 +563,6 @@ function stepEnemies(){
       }
     }
     
-    // Rebotar si no hay suelo o si llegó al límite de rango
     if(!hasFloor || Math.abs(e.x - e.startX) > e.range){
       e.vx *= -1;
       e.x += e.vx * 2;
@@ -624,11 +617,9 @@ function stepPl(){
   }
   if(p.x < 0) p.x = 0;
   
-  // Enemigos
   stepEnemies();
   if(checkEnemyCollision() && pl.lives <= 0) return;
   
-  // Caer al vacío
   if(p.y > 500){
     pl.lives--; $("plLives").textContent = pl.lives;
     if(pl.lives <= 0){ pl.running = false; $("plMsg").textContent = "💀 Fin del juego. Puntuación: " + pl.score; return; }
@@ -636,10 +627,8 @@ function stepPl(){
     $("plMsg").textContent = "¡Caíste! Te quedan " + pl.lives + " vidas.";
   }
   
-  // ====== COLISIÓN ESTRICTA CON TUBERÍAS (AABB) ======
   if(p.invulnerable <= 0){
     for(let ex of pl.exits){
-      // Hitbox estricto de la parte superior de la tubería
       const pipeHitbox = {
         x: ex.x + 3,
         y: ex.y,
@@ -647,7 +636,6 @@ function stepPl(){
         h: 18
       };
       
-      // El jugador debe estar DENTRO del hitbox (colisión AABB real)
       if(checkCollision(p, pipeHitbox)){
         p.invulnerable = 60;
         if(ex.letter === pl.correctExit){
@@ -679,7 +667,6 @@ function stepPl(){
   if(pl.cam > (80 * TILE) - 800) pl.cam = (80 * TILE) - 800;
 }
 
-// ====== DIBUJO CON TEMAS ======
 function drawBackground(){
   const theme = pl.theme;
   const grad = lctx.createLinearGradient(0, 0, 0, 450);
@@ -690,7 +677,6 @@ function drawBackground(){
   lctx.fillRect(0, 0, 800, 450);
   
   if(theme.bgDecor === "stars"){
-    // Estrellas titilantes + Luna
     lctx.fillStyle = "#fff";
     for(let i=0; i<80; i++){
       const x = (i * 97 + pl.frame * 0.05) % 800;
@@ -700,7 +686,6 @@ function drawBackground(){
       lctx.fillRect(x, y, 2, 2);
     }
     lctx.globalAlpha = 1;
-    // Luna
     const moonX = 650 - pl.cam * 0.1;
     lctx.beginPath();
     lctx.arc(moonX, 80, 35, 0, Math.PI*2);
@@ -712,7 +697,6 @@ function drawBackground(){
     lctx.fill();
   }
   else if(theme.bgDecor === "halloween"){
-    // Murciélagos volando
     lctx.fillStyle = "#000";
     for(let i=0; i<5; i++){
       const bx = (i * 200 + pl.frame * 0.8) % 1000 - 100;
@@ -732,7 +716,6 @@ function drawBackground(){
       lctx.lineTo(bx + 15, by + 3);
       lctx.fill();
     }
-    // Calabazas en el fondo
     for(let i=0; i<3; i++){
       const px = 150 + i * 250 - pl.cam * 0.2;
       const py = 380;
@@ -749,25 +732,21 @@ function drawBackground(){
       lctx.lineTo(px + 6, py + 5);
       lctx.stroke();
     }
-    // Niebla baja
     lctx.fillStyle = "rgba(155, 89, 182, 0.15)";
     lctx.fillRect(0, 380, 800, 70);
   }
   else if(theme.bgDecor === "classroom"){
-    // Pizarrón verde al fondo
     lctx.fillStyle = "#1e5128";
     lctx.fillRect(100 - pl.cam * 0.1, 50, 600, 200);
     lctx.strokeStyle = "#8b4513";
     lctx.lineWidth = 6;
     lctx.strokeRect(100 - pl.cam * 0.1, 50, 600, 200);
-    // Tiza (texto en el pizarrón)
     lctx.fillStyle = "rgba(255,255,255,0.7)";
     lctx.font = "bold 18px Arial";
     lctx.textAlign = "center";
     lctx.fillText("Soberanía Digital", 400 - pl.cam * 0.1, 100);
     lctx.font = "14px Arial";
     lctx.fillText("Nivel " + pl.level + " / 20", 400 - pl.cam * 0.1, 130);
-    // Libros apilados decorativos
     for(let i=0; i<4; i++){
       const bx = 50 + i * 200 - pl.cam * 0.15;
       const by = 300;
@@ -813,17 +792,14 @@ function drawTiles(){
 function drawExits(){
   const theme = pl.theme;
   pl.exits.forEach(ex => {
-    // Cuerpo de la tubería
     lctx.fillStyle = theme.pipe;
     lctx.fillRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
-    // Borde superior
     lctx.fillStyle = theme.pipeLight;
     lctx.fillRect(ex.x, ex.y, ex.w, 12);
     lctx.strokeStyle = theme.pipeDark;
     lctx.lineWidth = 2;
     lctx.strokeRect(ex.x, ex.y, ex.w, 12);
     lctx.strokeRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
-    // Letra
     lctx.fillStyle = "#fff";
     lctx.font = "bold 16px Arial";
     lctx.textAlign = "center";
@@ -838,7 +814,6 @@ function drawEnemies(){
     lctx.save();
     lctx.translate(e.x + e.w/2, e.y + e.h/2);
     
-    // Cuerpo del enemigo (tipo Goomba)
     lctx.fillStyle = "#8b4513";
     lctx.beginPath();
     lctx.arc(0, -2, 12, Math.PI, 0);
@@ -850,7 +825,6 @@ function drawEnemies(){
     lctx.lineWidth = 1.5;
     lctx.stroke();
     
-    // Ojos enojados
     lctx.fillStyle = "#fff";
     lctx.beginPath(); lctx.arc(-5, -3, 3, 0, Math.PI*2); lctx.fill();
     lctx.beginPath(); lctx.arc(5, -3, 3, 0, Math.PI*2); lctx.fill();
@@ -858,7 +832,6 @@ function drawEnemies(){
     lctx.beginPath(); lctx.arc(-5, -3, 1.5, 0, Math.PI*2); lctx.fill();
     lctx.beginPath(); lctx.arc(5, -3, 1.5, 0, Math.PI*2); lctx.fill();
     
-    // Cejas enojadas
     lctx.strokeStyle = "#000";
     lctx.lineWidth = 2;
     lctx.beginPath();
@@ -866,7 +839,6 @@ function drawEnemies(){
     lctx.moveTo(8, -7); lctx.lineTo(3, -5);
     lctx.stroke();
     
-    // Pies
     lctx.fillStyle = "#2c3e50";
     const walkOffset = Math.sin(pl.frame * 0.2) * 2;
     lctx.fillRect(-10, 10, 7, 4 + walkOffset);
