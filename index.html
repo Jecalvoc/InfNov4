@@ -94,15 +94,14 @@ Controles: <b>← →</b> giran · <b>↑</b> acelera · <b>ESPACIO</b> dispara.
 </div>
 </section>
 
-<!-- ================= MÓDULO 3 (20 NIVELES + ENEMIGOS + TEMAS) ================= -->
+<!-- ================= MÓDULO 3 ================= -->
 <section id="m3">
 <div class="intro"><h2>🏃 Módulo 3 — El iceberg de lo "gratis" (20 niveles temáticos)</h2>
 Lo que ves: conexión y entretenimiento. Lo que nadie te cuenta: <b>FOMO</b>, <b>comparación social</b>, <b>fragmentación de la atención</b>, <b>burbujas de filtro</b> y <b>consumismo impulsivo</b>.
 El precio real de lo gratis lo pagas con tu salud mental y tu autonomía.</div>
 <div class="how"><b>Objetivo:</b> atraviesa <b>20 niveles</b> con 3 temas visuales rotativos (Nocturno, Halloween, Aula de Clases).
-Al final de cada nivel hay <b>4 tuberías (A, B, C, D)</b>. Lee la pregunta y entra solo en la correcta.
-⚠️ <b>¡Cuidado!</b> Hay <b>enemigos patrullando</b>. Si los tocas, pierdes una vida.
-Colisión estricta con las tuberías: debes entrar exactamente por la parte superior.</div>
+Al final del nivel hay <b>4 tuberías separadas (A, B, C, D)</b>. Lee la pregunta y salta exactamente sobre la correcta.
+⚠️ <b>¡Cuidado!</b> Hay <b>enemigos patrullando</b>. Si los tocas, pierdes una vida.</div>
 <div class="arena">
 <div class="qbox"><h3 id="plQ">Cargando nivel…</h3><div class="opts" id="plOpts"></div></div>
 <div class="hud">
@@ -396,7 +395,7 @@ $("astStart").onclick=()=>{ if(!ast.started||ast.lives<=0)astReset(); ast.starte
 $("astReset").onclick=astReset;
 
 /* =========================================================
-   MÓDULO 3 — PLATAFORMAS (20 NIVELES + ENEMIGOS + 3 TEMAS)
+   MÓDULO 3 — PLATAFORMAS (TUBOS SEPARADOS Y BAJOS)
    ========================================================= */
 const lctx = ctxOf("plCanvas");
 const TILE = 30;
@@ -411,50 +410,30 @@ const PL_Q = [
 ];
 
 const THEME_NIGHT = {
-  name: "🌙 Nocturno",
-  color: "#2c3e50",
+  name: "🌙 Nocturno", color: "#2c3e50",
   sky: ["#0f2027", "#203a43", "#2c5364"],
-  ground: "#3d2817",
-  grass: "#1e5128",
-  brick: "#5d4e37",
-  brickStroke: "#3d2817",
-  pipe: "#27ae60",
-  pipeLight: "#2ecc71",
-  pipeDark: "#1e8449",
-  playerHat: "#e74c3c",
-  playerOveralls: "#3498db",
+  ground: "#3d2817", grass: "#1e5128",
+  brick: "#5d4e37", brickStroke: "#3d2817",
+  pipe: "#27ae60", pipeLight: "#2ecc71", pipeDark: "#1e8449",
+  playerHat: "#e74c3c", playerOveralls: "#3498db",
   bgDecor: "stars"
 };
-
 const THEME_HALLOWEEN = {
-  name: "🎃 Halloween",
-  color: "#6c3483",
+  name: "🎃 Halloween", color: "#6c3483",
   sky: ["#1a0033", "#4a1486", "#8e44ad"],
-  ground: "#2c2c2c",
-  grass: "#6c3483",
-  brick: "#7d3c98",
-  brickStroke: "#4a235a",
-  pipe: "#d35400",
-  pipeLight: "#e67e22",
-  pipeDark: "#a04000",
-  playerHat: "#f39c12",
-  playerOveralls: "#6c3483",
+  ground: "#2c2c2c", grass: "#6c3483",
+  brick: "#7d3c98", brickStroke: "#4a235a",
+  pipe: "#d35400", pipeLight: "#e67e22", pipeDark: "#a04000",
+  playerHat: "#f39c12", playerOveralls: "#6c3483",
   bgDecor: "halloween"
 };
-
 const THEME_CLASSROOM = {
-  name: "📚 Aula de Clases",
-  color: "#1e8449",
+  name: "📚 Aula de Clases", color: "#1e8449",
   sky: ["#f5deb3", "#faebd7", "#ffe4b5"],
-  ground: "#8b4513",
-  grass: "#228b22",
-  brick: "#d2691e",
-  brickStroke: "#8b4513",
-  pipe: "#1e8449",
-  pipeLight: "#27ae60",
-  pipeDark: "#145a32",
-  playerHat: "#2c3e50",
-  playerOveralls: "#c0392b",
+  ground: "#8b4513", grass: "#228b22",
+  brick: "#d2691e", brickStroke: "#8b4513",
+  pipe: "#1e8449", pipeLight: "#27ae60", pipeDark: "#145a32",
+  playerHat: "#2c3e50", playerOveralls: "#c0392b",
   bgDecor: "classroom"
 };
 
@@ -466,11 +445,11 @@ function getTheme(level) {
 }
 
 const MAP_LAYOUTS = [
-  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","              B   B                 B   B                                       ","             B B B B               B B B B                                      ","                                                                                ","           B           B                   B                                    ","          B B         B B                 B B                                   ","S      B   B       B   B       B       B   B               a  b  c  d          ","################################################################################"],
-  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B   B   B   B   B   B   B   B   B                                   ","       B B B B B B B B B B B B B B B B B B B                                    ","                                                                                ","      B                       B                       B                         ","     B B                     B B                     B B                        ","S  B   B       B   B       B   B       B   B       B   B   a  b  c  d          ","################################################################################"],
-  ["                                                                                ","                                                                                ","                                                                                ","                                                B   B                           ","                                               B B B B                          ","                                          B   B                                 ","                                         B B B                                  ","                                    B   B                                       ","                                   B B B                                        ","S                             B   B                          a  b  c  d         ","################################################################################"],
-  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B               B   B               B   B                           ","       B B B B             B B B B             B B B B                          ","                                                                                ","      B       B           B       B           B       B                         ","     B B     B B         B B     B B         B B     B B                        ","S  B   B   B   B       B   B   B   B       B   B   B   B   a  b  c  d          ","################################################################################"],
-  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","                                                                                ","           B             B             B             B                          ","          B B           B B           B B           B B                         ","         B   B         B   B         B   B         B   B                        ","        B     B       B     B       B     B       B     B                       ","S     B       B     B       B     B       B     B       B   a  b  c  d         ","################################################################################"]
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","              B   B                 B   B                                       ","             B B B B               B B B B                                      ","                                                                                ","           B           B                   B                                    ","          B B         B B                 B B                                   ","S      B   B       B   B       B       B   B                                    ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B   B   B   B   B   B   B   B   B                                   ","       B B B B B B B B B B B B B B B B B B B                                    ","                                                                                ","      B                       B                       B                         ","     B B                     B B                     B B                        ","S  B   B       B   B       B   B       B   B       B   B                        ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                B   B                           ","                                               B B B B                          ","                                          B   B                                 ","                                         B B B                                  ","                                    B   B                                       ","                                   B B B                                        ","S                             B   B                                             ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B               B   B               B   B                           ","       B B B B             B B B B             B B B B                          ","                                                                                ","      B       B           B       B           B       B                         ","     B B     B B         B B     B B         B B     B B                        ","S  B   B   B   B       B   B   B   B       B   B   B   B                        ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","                                                                                ","           B             B             B             B                          ","          B B           B B           B B           B B                         ","         B   B         B   B         B   B         B   B                        ","        B     B       B     B       B     B       B     B                       ","S     B       B     B       B     B       B     B       B                       ","################################################################################"]
 ];
 
 const MAP_ENEMIES = [
@@ -481,6 +460,13 @@ const MAP_ENEMIES = [
   [{x: 600, y: 9*T, range: 150, speed: 1.2}, {x: 1200, y: 9*T, range: 100, speed: 1.3}, {x: 1800, y: 9*T, range: 130, speed: 1.0}]
 ];
 
+// ====== NUEVA CONFIGURACIÓN DE TUBERÍAS ======
+// 4 tuberías separadas al final del nivel
+// Columnas: 64, 68, 72, 76 (separación de 4 columnas = 120px entre cada una)
+const PIPE_COLUMNS = [64, 68, 72, 76];
+const PIPE_ROW = 8; // Fila donde se ubican las tuberías (sobre el suelo)
+const PIPE_HEIGHT = TILE; // Altura de 1 tile (30px) en lugar de 2 tiles (60px)
+
 const pl = {
   running:false, started:false, score:0, lives:15, level:1,
   tiles:[], exits:[], enemies:[], correctExit:"A",
@@ -490,22 +476,36 @@ const pl = {
 function plParseMap(mapIdx){
   const raw = MAP_LAYOUTS[mapIdx];
   pl.tiles = []; pl.exits = []; pl.enemies = [];
-  let spawnX = 60, spawnY = 300, exitIdx = 0;
+  let spawnX = 60, spawnY = 300;
   
+  // Parsear mapa (sin las letras abcd, se colocan automáticamente)
   for(let r=0; r<raw.length; r++){
     for(let c=0; c<raw[r].length; c++){
       const char = raw[r][c], x = c * TILE, y = r * TILE;
       if(char === '#') pl.tiles.push({x, y, w:TILE, h:TILE, type:'ground'});
       else if(char === 'B') pl.tiles.push({x, y, w:TILE, h:TILE, type:'brick'});
       else if(char === 'S') { spawnX = x; spawnY = y; }
-      else if('abcd'.includes(char)){
-        const letterMap = {'a':'A', 'b':'B', 'c':'C', 'd':'D'};
-        pl.exits.push({x: x, y: y, w: TILE, h: TILE*2, letter: letterMap[char], id: exitIdx++});
-        pl.tiles.push({x: x, y: y + TILE, w: TILE, h: TILE, type:'ground'});
-      }
     }
   }
   
+  // ====== COLOCAR 4 TUBERÍAS SEPARADAS AL FINAL DEL NIVEL ======
+  const letters = ["A", "B", "C", "D"];
+  PIPE_COLUMNS.forEach((col, i) => {
+    const x = col * TILE;
+    const y = PIPE_ROW * TILE;
+    pl.exits.push({
+      x: x,
+      y: y,
+      w: TILE,
+      h: PIPE_HEIGHT, // AHORA MÁS BAJO (30px en lugar de 60px)
+      letter: letters[i],
+      id: i
+    });
+    // Suelo de soporte debajo de la tubería
+    pl.tiles.push({x: x, y: y + PIPE_HEIGHT, w: TILE, h: TILE, type:'ground'});
+  });
+  
+  // Generar enemigos
   const enemyDefs = MAP_ENEMIES[mapIdx];
   enemyDefs.forEach(def => {
     pl.enemies.push({
@@ -552,17 +552,14 @@ function stepEnemies(){
   pl.enemies.forEach(e => {
     if(!e.alive) return;
     e.x += e.vx;
-    
     const feetY = e.y + e.h + 2;
     const checkX = e.vx > 0 ? e.x + e.w + 2 : e.x - 2;
-    
     let hasFloor = false;
     for(let t of pl.tiles){
       if(checkX >= t.x && checkX <= t.x + t.w && feetY >= t.y && feetY <= t.y + t.h){
         hasFloor = true; break;
       }
     }
-    
     if(!hasFloor || Math.abs(e.x - e.startX) > e.range){
       e.vx *= -1;
       e.x += e.vx * 2;
@@ -627,13 +624,15 @@ function stepPl(){
     $("plMsg").textContent = "¡Caíste! Te quedan " + pl.lives + " vidas.";
   }
   
+  // ====== COLISIÓN CON TUBERÍAS BAJAS ======
   if(p.invulnerable <= 0){
     for(let ex of pl.exits){
+      // Hitbox ajustado al nuevo tamaño bajo de las tuberías
       const pipeHitbox = {
         x: ex.x + 3,
         y: ex.y,
         w: ex.w - 6,
-        h: 18
+        h: 14 // Reducido de 18 a 14 para coincidir con la nueva altura
       };
       
       if(checkCollision(p, pipeHitbox)){
@@ -792,19 +791,23 @@ function drawTiles(){
 function drawExits(){
   const theme = pl.theme;
   pl.exits.forEach(ex => {
+    // ====== DIBUJO DE TUBERÍA BAJA (30px de alto) ======
+    // Cuerpo de la tubería (solo 1 tile de alto)
     lctx.fillStyle = theme.pipe;
-    lctx.fillRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
+    lctx.fillRect(ex.x + 2, ex.y + 8, ex.w - 4, ex.h - 8);
+    // Borde superior (más delgado para que quepa)
     lctx.fillStyle = theme.pipeLight;
-    lctx.fillRect(ex.x, ex.y, ex.w, 12);
+    lctx.fillRect(ex.x, ex.y, ex.w, 10);
     lctx.strokeStyle = theme.pipeDark;
     lctx.lineWidth = 2;
-    lctx.strokeRect(ex.x, ex.y, ex.w, 12);
-    lctx.strokeRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
+    lctx.strokeRect(ex.x, ex.y, ex.w, 10);
+    lctx.strokeRect(ex.x + 2, ex.y + 8, ex.w - 4, ex.h - 8);
+    // Letra
     lctx.fillStyle = "#fff";
-    lctx.font = "bold 16px Arial";
+    lctx.font = "bold 14px Arial";
     lctx.textAlign = "center";
     lctx.textBaseline = "middle";
-    lctx.fillText(ex.letter, ex.x + ex.w/2, ex.y + 6);
+    lctx.fillText(ex.letter, ex.x + ex.w/2, ex.y + 5);
   });
 }
 
@@ -813,7 +816,6 @@ function drawEnemies(){
     if(!e.alive) return;
     lctx.save();
     lctx.translate(e.x + e.w/2, e.y + e.h/2);
-    
     lctx.fillStyle = "#8b4513";
     lctx.beginPath();
     lctx.arc(0, -2, 12, Math.PI, 0);
@@ -824,26 +826,22 @@ function drawEnemies(){
     lctx.strokeStyle = "#5d2f0a";
     lctx.lineWidth = 1.5;
     lctx.stroke();
-    
     lctx.fillStyle = "#fff";
     lctx.beginPath(); lctx.arc(-5, -3, 3, 0, Math.PI*2); lctx.fill();
     lctx.beginPath(); lctx.arc(5, -3, 3, 0, Math.PI*2); lctx.fill();
     lctx.fillStyle = "#000";
     lctx.beginPath(); lctx.arc(-5, -3, 1.5, 0, Math.PI*2); lctx.fill();
     lctx.beginPath(); lctx.arc(5, -3, 1.5, 0, Math.PI*2); lctx.fill();
-    
     lctx.strokeStyle = "#000";
     lctx.lineWidth = 2;
     lctx.beginPath();
     lctx.moveTo(-8, -7); lctx.lineTo(-3, -5);
     lctx.moveTo(8, -7); lctx.lineTo(3, -5);
     lctx.stroke();
-    
     lctx.fillStyle = "#2c3e50";
     const walkOffset = Math.sin(pl.frame * 0.2) * 2;
     lctx.fillRect(-10, 10, 7, 4 + walkOffset);
     lctx.fillRect(3, 10, 7, 4 - walkOffset);
-    
     lctx.restore();
   });
 }
