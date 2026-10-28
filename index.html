@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎮 Soberanía Digital — Taller Interactivo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#2c3e50,#4ca1af);padding:15px;min-height:100vh;color:#333}
+.wrap{max-width:1100px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.4)}
+header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:25px;text-align:center}
+header h1{font-size:1.9em;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+nav{display:flex;gap:8px;padding:15px;background:#f1f3f7;flex-wrap:wrap;justify-content:center}
+nav button{border:0;padding:12px 18px;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;font-size:.95em;transition:all .2s}
+nav button:nth-child(1){background:#e74c3c}nav button:nth-child(2){background:#16a085}
+nav button:nth-child(3){background:#e67e22}nav button:nth-child(4){background:#8e44ad}
+nav button.on{outline:3px solid #2c3e50;transform:scale(1.05);box-shadow:0 4px 10px rgba(0,0,0,0.2)}
+section{display:none;padding:25px}section.on{display:block}
+.intro{background:#eef2ff;border-left:6px solid #667eea;padding:18px;border-radius:10px;margin-bottom:15px;line-height:1.6}
+.intro h2{color:#4b3f9e;margin-bottom:8px}
+.how{background:#fff6d9;border-left:6px solid #f1c40f;padding:14px;border-radius:10px;margin-bottom:15px;line-height:1.7}
+.arena{background:#1a1a2e;border-radius:14px;padding:18px;text-align:center;position:relative}
+canvas{display:block;margin:12px auto;max-width:100%;height:auto;border:4px solid #2c3e50;border-radius:8px;touch-action:none}
+.qbox{background:#fff;color:#222;border-radius:10px;padding:15px;margin-bottom:10px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.qbox h3{color:#5b3fa8;font-size:1.2em;margin-bottom:10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{background:#f4f5fb;border-radius:8px;padding:10px;display:flex;gap:10px;align-items:center;font-size:.95em;border:1px solid #e0e0e0}
+.badge{background:#667eea;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex:none;font-size:.9em}
+.hud{background:#fff;color:#222;display:inline-flex;gap:15px;padding:10px 20px;border-radius:10px;font-weight:bold;margin:6px;box-shadow:0 2px 5px rgba(0,0,0,0.1);flex-wrap:wrap;justify-content:center}
+.msg{min-height:26px;color:#ffe66d;font-weight:bold;margin-top:8px;font-size:1.05em;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.btn{border:0;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 24px;border-radius:10px;font-weight:bold;font-size:1em;cursor:pointer;margin:5px;transition:filter .2s}
+.btn:hover{filter:brightness(1.15)}
+.pad{display:inline-grid;grid-template-columns:repeat(3,50px);gap:5px;margin-top:10px}
+.pad button{border:0;background:#34495e;color:#fff;border-radius:8px;padding:12px;font-size:1.2em;cursor:pointer;user-select:none;box-shadow:0 4px 0 #2c3e50}
+.pad button:active{transform:translateY(4px);box-shadow:0 0 0 #2c3e50}
+.card{background:#fff3e6;border:2px solid #e67e22;border-radius:12px;padding:20px;text-align:left;margin:12px 0}
+.card h3{color:#a84300;margin-bottom:10px}
+.card p{line-height:1.6;margin-bottom:12px}
+.choice{display:block;width:100%;text-align:left;border:2px solid #e67e22;background:#fff;border-radius:10px;padding:12px;margin:7px 0;cursor:pointer;font-size:1em;transition:all .2s}
+.choice:hover{background:#fff0dd}
+.choice.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.choice.no{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.fb{padding:14px;border-radius:10px;margin-top:12px;line-height:1.6;background:#e7f5ff;border-left:4px solid #3498db}
+.theme-label{display:inline-block;padding:6px 14px;border-radius:20px;font-weight:bold;color:#fff;margin:5px;font-size:.9em}
+@media(max-width:700px){.opts{grid-template-columns:1fr}section{padding:15px}.qbox h3{font-size:1.1em}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>🎮 Soberanía Digital</h1><p>Entiende cómo funcionan las apps y recupera el control de tu atención</p></header>
+<nav>
+<button class="on" data-m="1">1 · Pac-Datos</button>
+<button data-m="2">2 · Asteroides</button>
+<button data-m="3">3 · Plataformas</button>
+<button data-m="4">4 · Decisiones</button>
+</nav>
+
+<!-- ================= MÓDULO 1 ================= -->
+<section id="m1" class="on">
+<div class="intro"><h2>🟡 Módulo 1 — La arquitectura oculta de las apps</h2>
+Nada en las redes sociales es gratis: tu atención es la materia prima y tu comportamiento, el producto.
+Las plataformas construyen un <b>perfil predictivo</b> tuyo a partir de dos tipos de datos:
+<p><b>Datos explícitos:</b> lo que tú entregas (nombre, correo). <b>Datos implícitos:</b> lo que la app mide sin que lo notes (tiempo en video, ubicación).
+Con eso, venden <b>publicidad personalizada</b>. Eso es <b>capitalismo de vigilancia</b>.</p></div>
+<div class="how"><b>Objetivo:</b> lee la pregunta, identifica la respuesta correcta y guía a Pac-Man hasta el punto con la letra correspondiente.
+⚠️ <b>¡Cuidado!</b> Hay fantasmas patrullando el laberinto. Evítalos o perderás una vida.
+Controles: <b>flechas del teclado</b> o botones en pantalla.</div>
+<div class="arena">
+<div class="qbox"><h3 id="pacQ">Cargando pregunta…</h3><div class="opts" id="pacOpts"></div></div>
+<div class="hud">⭐ <span id="pacScore">0</span> &nbsp; ❤️ <span id="pacLives">3</span> &nbsp; 📚 Pregunta <span id="pacLevel">1</span></div>
+<canvas id="pacCanvas" width="684" height="468"></canvas>
+<div class="msg" id="pacMsg">Pulsa INICIAR y busca la respuesta correcta evitando a los fantasmas.</div>
+<div><button class="btn" id="pacStart">▶ Iniciar</button><button class="btn" id="pacReset">↻ Reiniciar</button></div>
+<div class="pad">
+<span></span><button data-d="up">▲</button><span></span>
+<button data-d="left">◀</button><button data-d="down">▼</button><button data-d="right">▶</button>
+</div>
+</div>
+</section>
+
+<!-- ================= MÓDULO 2 ================= -->
+<section id="m2">
+<div class="intro"><h2>🚀 Módulo 2 — Dark patterns: cómo te manipulan las interfaces</h2>
+Las apps están diseñadas por equipos de psicólogos para que <b>pases más tiempo dentro</b>.
+Esas trampas se llaman <b>dark patterns</b>: deslizamiento infinito, recompensas impredecibles, botones asimétricos, urgencia falsa y suscripciones casi imposibles de cancelar.</div>
+<div class="how"><b>Objetivo:</b> destruir con tu láser únicamente el asteroide que contenga la letra de la respuesta correcta.
+Controles: <b>← →</b> giran · <b>↑</b> acelera · <b>ESPACIO</b> dispara. Disparar a un asteroide equivocado te cuesta una vida.</div>
+<div class="arena">
+<div class="qbox"><h3 id="astQ"></h3><div class="opts" id="astOpts"></div></div>
+<div class="hud">⭐ <span id="astScore">0</span> &nbsp; ❤️ <span id="astLives">3</span></div>
+<canvas id="astCanvas" width="600" height="480"></canvas>
+<div class="msg" id="astMsg">Pulsa INICIAR.</div>
+<div><button class="btn" id="astStart">▶ Iniciar / Pausar</button><button class="btn" id="astReset">↻ Reiniciar</button></div>
+</div>
+</section>
+
+<!-- ================= MÓDULO 3 (20 NIVELES + ENEMIGOS + TEMAS) ================= -->
+<section id="m3">
+<div class="intro"><h2>🏃 Módulo 3 — El iceberg de lo "gratis" (20 niveles temáticos)</h2>
+Lo que ves: conexión y entretenimiento. Lo que nadie te cuenta: <b>FOMO</b>, <b>comparación social</b>, <b>fragmentación de la atención</b>, <b>burbujas de filtro</b> y <b>consumismo impulsivo</b>.
+El precio real de lo gratis lo pagas con tu salud mental y tu autonomía.</div>
+<div class="how"><b>Objetivo:</b> atraviesa <b>20 niveles</b> con 3 temas visuales rotativos (Nocturno, Halloween, Aula de Clases).
+Al final de cada nivel hay <b>4 tuberías (A, B, C, D)</b>. Lee la pregunta y entra solo en la correcta.
+⚠️ <b>¡Cuidado!</b> Hay <b>enemigos patrullando</b>. Si los tocas, pierdes una vida.
+Colisión estricta con las tuberías: debes entrar exactamente por la parte superior.</div>
+<div class="arena">
+<div class="qbox"><h3 id="plQ">Cargando nivel…</h3><div class="opts" id="plOpts"></div></div>
+<div class="hud">
+🗺️ Nivel <span id="plLevel">1</span>/20 &nbsp; 
+<span id="plTheme" class="theme-label" style="background:#2c3e50">🌙 Nocturno</span> &nbsp;
+⭐ <span id="plScore">0</span> &nbsp; ❤️ <span id="plLives">3</span>
+</div>
+<canvas id="plCanvas" width="800" height="450"></canvas>
+<div class="msg" id="plMsg">Pulsa INICIAR para comenzar la aventura.</div>
+<div><button class="btn" id="plStart">▶ Iniciar / Pausar</button><button class="btn" id="plReset">↻ Reiniciar</button></div>
+<div class="pad">
+<span></span><button data-d="up">▲</button><span></span>
+<button data-d="left">◀</button><button data-d="down">▼</button><button data-d="right">▶</button>
+</div>
+</div>
+</section>
+
+<!-- ================= MÓDULO 4 ================= -->
+<section id="m4">
+<div class="intro"><h2>🎭 Módulo 4 — Ciudadanía digital en acción</h2>
+La <b>soberanía digital</b> es tu capacidad de controlar tu entorno tecnológico.
+Se construye en 5 niveles: consumo pasivo → consumo consciente → auditoría de privacidad → desconexión intencional → educación y activismo.</div>
+<div class="arena" style="background:#fafbff">
+<div class="hud">⭐ <span id="rpScore">0</span> &nbsp; <span id="rpInfo">0/6 decisiones</span></div>
+<div id="rpBox"><p style="padding:20px;color:#555">Pulsa INICIAR para enfrentarte a 6 dilemas reales.</p></div>
+<div><button class="btn" id="rpStart">▶ Iniciar</button><button class="btn" id="rpReset">↻ Reiniciar</button></div>
+</div>
+</section>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const ctxOf = id => $(id).getContext("2d");
+const shuffle = a => a.map(v=>({v,r:Math.random()})).sort((x,y)=>x.r-y.r).map(o=>o.v);
+const keys = {};
+let active = 1;
+
+document.querySelectorAll("nav button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    active = +b.dataset.m;
+    document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+    document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="m"+active));
+    pac.running=false; ast.running=false; pl.running=false;
+    $("pacStart").textContent="▶ Continuar";
+  });
+});
+
+/* =========================================================
+   MÓDULO 1 — PAC-DATOS (CON FANTASMAS)
+   ========================================================= */
+const T=36, COLS=19, ROWS=13;
+const pctx = ctxOf("pacCanvas");
+const PAC_Q = [
+ {q:"¿Qué se entiende por DATOS EXPLÍCITOS?",o:["Información que entregas voluntariamente (nombre, correo)","Tus patrones de scroll y pausas en videos","Tu ubicación GPS en tiempo real","Las cookies que guarda el navegador"],c:0},
+ {q:"¿Qué son los DATOS IMPLÍCITOS?",o:["Tu fecha de nacimiento declarada","Tus patrones de scroll, pausas en videos y horarios de conexión","Tu nombre de usuario público","Los contactos que agregas manualmente"],c:1},
+ {q:"¿Qué mide realmente la métrica de ENGAGEMENT?",o:["Qué tan feliz estás usando la aplicación","La cantidad de atención que la plataforma logra extraerte","La velocidad de tu conexión a internet","El número de amigos que tienes"],c:1},
+ {q:"¿Qué es un PERFIL PREDICTIVO?",o:["Tu foto de perfil con filtros","Un modelo matemático que anticipa tu comportamiento futuro","El listado de tus contactos frecuentes","Un resumen de tus publicaciones"],c:1},
+ {q:"¿En qué consiste la PUBLICIDAD PREDICTIVA?",o:["Anuncios genéricos para todos los usuarios","Anuncios seleccionados algorítmicamente según tu perfil conductual","Campañas políticas en televisión","Promociones impresas en revistas"],c:1},
+ {q:"¿Qué define al CAPITALISMO DE VIGILANCIA?",o:["El uso de antivirus para proteger dispositivos","La conversión sistemática de tu experiencia humana en datos comercializables","La eliminación de tu historial de navegación","Un tipo de cifrado de extremo a extremo"],c:1}
+];
+function makeMaze(){
+  const g=Array.from({length:ROWS},()=>Array(COLS).fill(0));
+  for(let c=0;c<COLS;c++){g[0][c]=1;g[ROWS-1][c]=1;}
+  for(let r=0;r<ROWS;r++){g[r][0]=1;g[r][COLS-1]=1;}
+  const pillars={2:[2,3,6,7,11,12,15,16],4:[4,9,14],6:[2,3,8,15,16],8:[4,9,14],10:[2,3,6,7,11,12,15,16]};
+  Object.entries(pillars).forEach(([r,cs])=>cs.forEach(c=>g[+r][c]=1));
+  return g;
+}
+const maze = makeMaze();
+const isWall=(c,r)=> r<0||r>=ROWS||c<0||c>=COLS||maze[r][c]===1;
+const center=(c,r)=>({x:c*T+T/2,y:r*T+T/2});
+function reachable(){
+  const seen=new Set(["1,1"]), q=[[1,1]], out=[];
+  while(q.length){
+    const [c,r]=q.shift(); out.push([c,r]);
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{
+      const nc=c+dx,nr=r+dy,k=nc+","+nr;
+      if(!isWall(nc,nr)&&!seen.has(k)){seen.add(k);q.push([nc,nr]);}
+    });
+  }
+  return out;
+}
+const freeCells = reachable();
+const GHOST_COLORS = ["#ff4d4d", "#ffb3b3", "#4dff4d"];
+let ghosts = [];
+function initGhosts() {
+  ghosts = [
+    {c: 9, r: 6, color: GHOST_COLORS[0]},
+    {c: 10, r: 6, color: GHOST_COLORS[1]},
+    {c: 9, r: 7, color: GHOST_COLORS[2]}
+  ].map(g => {
+    g.x = g.c * T + T/2; g.y = g.r * T + T/2;
+    g.dir = {x: 0, y: 0}; g.speed = 0.05; g.t = 0; g.moving = false;
+    return g;
+  });
+  ghosts.forEach(g => {
+    const dirs = [{x:0,y:-1}, {x:0,y:1}, {x:-1,y:0}, {x:1,y:0}];
+    const valid = dirs.filter(d => !isWall(g.c + d.x, g.r + d.y));
+    g.dir = valid[Math.floor(Math.random() * valid.length)];
+  });
+}
+function stepGhosts() {
+  ghosts.forEach(g => {
+    if (!g.moving) {
+      const dirs = [{x:0,y:-1}, {x:0,y:1}, {x:-1,y:0}, {x:1,y:0}];
+      const valid = dirs.filter(d => !isWall(g.c + d.x, g.r + d.y));
+      const nonReverse = valid.filter(d => !(d.x === -g.dir.x && d.y === -g.dir.y));
+      const choices = nonReverse.length > 0 ? nonReverse : valid;
+      g.dir = choices[Math.floor(Math.random() * choices.length)];
+      g.moving = true; g.t = 0;
+      g.from = {x: g.x, y: g.y};
+      g.c += g.dir.x; g.r += g.dir.y;
+      g.to = center(g.c, g.r);
+    }
+    g.t += g.speed;
+    if (g.t >= 1) { g.t = 1; g.moving = false; g.x = g.to.x; g.y = g.to.y; }
+    else { g.x = g.from.x + (g.to.x - g.from.x) * g.t; g.y = g.from.y + (g.to.y - g.from.y) * g.t; }
+  });
+}
+function drawGhosts() {
+  ghosts.forEach(g => {
+    pctx.save(); pctx.translate(g.x, g.y);
+    pctx.beginPath(); pctx.arc(0, -4, T/2 - 4, Math.PI, 0);
+    pctx.lineTo(T/2 - 4, T/2 - 4);
+    for(let i=1; i<=3; i++) pctx.lineTo((T/2 - 4) - (i * (T-8)/3), (i%2===0) ? (T/2 - 4) : (T/2 - 8));
+    pctx.lineTo(-(T/2 - 4), T/2 - 4); pctx.closePath();
+    pctx.fillStyle = g.color; pctx.fill();
+    pctx.strokeStyle = "rgba(0,0,0,0.3)"; pctx.lineWidth = 1; pctx.stroke();
+    const eyeOffX = g.dir.x * 3, eyeOffY = g.dir.y * 3;
+    pctx.fillStyle = "#fff";
+    pctx.beginPath(); pctx.arc(-6 + eyeOffX, -6 + eyeOffY, 5, 0, Math.PI*2); pctx.fill();
+    pctx.beginPath(); pctx.arc(6 + eyeOffX, -6 + eyeOffY, 5, 0, Math.PI*2); pctx.fill();
+    pctx.fillStyle = "#00f";
+    pctx.beginPath(); pctx.arc(-6 + eyeOffX*1.5, -6 + eyeOffY*1.5, 2.5, 0, Math.PI*2); pctx.fill();
+    pctx.beginPath(); pctx.arc(6 + eyeOffX*1.5, -6 + eyeOffY*1.5, 2.5, 0, Math.PI*2); pctx.fill();
+    pctx.restore();
+  });
+}
+const pac = {started:false, running:false, over:false, score:0, lives:3, qi:0, deck:[], p:null, pellets:[], want:{x:0,y:0}, correct:"A"};
+function pacSetMsg(t){ $("pacMsg").textContent=t; }
+function pacPlacePellets(){
+  const pool=shuffle(freeCells.filter(([c,r])=>Math.abs(c-1)+Math.abs(r-1)>4));
+  const spots=pool.slice(0,4);
+  const letters=shuffle(["A","B","C","D"]);
+  pac.pellets=spots.map(([c,r],i)=>({letter:letters[i],...center(c,r),eaten:false}));
+}
+function pacLoadQuestion(){
+  if(!pac.deck.length) pac.deck=shuffle(PAC_Q.map((_,i)=>i));
+  const idx=pac.deck.pop(), item=PAC_Q[idx], order=shuffle([0,1,2,3]), letters=["A","B","C","D"];
+  pac.correct=letters[order.indexOf(item.c)];
+  $("pacQ").textContent=item.q;
+  $("pacOpts").innerHTML=order.map((oi,k)=>`<div class="opt"><span class="badge">${letters[k]}</span><span>${item.o[oi]}</span></div>`).join("");
+  pacPlacePellets(); $("pacLevel").textContent=pac.qi+1;
+}
+function pacReset(){
+  Object.assign(pac,{started:true,running:false,over:false,score:0,lives:3,qi:0,deck:[],want:{x:0,y:0}});
+  pac.p=center(1,1); Object.assign(pac.p,{c:1,r:1,dir:{x:0,y:0},moving:false,t:0});
+  initGhosts(); pacLoadQuestion(); $("pacScore").textContent=0; $("pacLives").textContent=3;
+  $("pacStart").textContent="▶ Iniciar"; pacSetMsg("Analiza la pregunta. Come solo la letra correcta y evita a los fantasmas."); drawPac();
+}
+function pacTryDir(name){ const d={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[name]; if(d) pac.want=d; }
+function checkGhostCollision() {
+  for (let g of ghosts) {
+    if (Math.hypot(pac.p.x - g.x, pac.p.y - g.y) < T * 0.7) {
+      pac.lives--; $("pacLives").textContent = pac.lives;
+      if (pac.lives <= 0) {
+        pac.running = false; pac.over = true;
+        $("pacStart").textContent = "↻ Volver a jugar";
+        pacSetMsg("💀 ¡Te atrapó un fantasma! Fin del juego. Puntuación: " + pac.score);
+      } else {
+        pacSetMsg("👻 ¡Te atrapó un fantasma! −1 vida. Volviendo al inicio...");
+        pac.p.x = center(1,1).x; pac.p.y = center(1,1).y;
+        pac.p.c = 1; pac.p.r = 1; pac.p.dir = {x:0, y:0}; pac.p.moving = false;
+        initGhosts();
+      }
+      return true;
+    }
+  }
+  return false;
+}
+function stepPac(){
+  stepGhosts();
+  if (checkGhostCollision()) return;
+  const p=pac.p;
+  if(!p.moving){
+    const can=d=>d&&(d.x||d.y)&&!isWall(p.c+d.x,p.r+d.y);
+    if(can(pac.want)) p.dir={...pac.want}; else if(!can(p.dir)) p.dir={x:0,y:0};
+    if(p.dir.x||p.dir.y){ p.moving=true; p.t=0; p.from={x:p.x,y:p.y}; p.c+=p.dir.x; p.r+=p.dir.y; p.to=center(p.c,p.r); }
+  }
+  if(p.moving){
+    p.t+=0.07;
+    if(p.t>=1){ p.t=1; p.moving=false; p.x=p.to.x; p.y=p.to.y; pacEat(); }
+    else{ p.x=p.from.x+(p.to.x-p.from.x)*p.t; p.y=p.from.y+(p.to.y-p.from.y)*p.t; }
+  }
+}
+function pacEat(){
+  const p=pac.p, hit=pac.pellets.find(d=>!d.eaten&&Math.hypot(d.x-p.x,d.y-p.y)<T*0.55);
+  if(!hit) return;
+  if(hit.letter===pac.correct){
+    hit.eaten=true; pac.score+=100; pac.qi++;
+    $("pacScore").textContent=pac.score; pacSetMsg("✅ Correcto. +100 puntos. Avanzando…"); pacLoadQuestion();
+  }else{
+    hit.eaten=true; pac.lives--; $("pacLives").textContent=pac.lives;
+    pacSetMsg("❌ Esa no era. La correcta era la "+pac.correct+". Vuelve a intentarlo.");
+    if(pac.lives<=0){ pac.running=false; pac.over=true; $("pacStart").textContent="↻ Volver a jugar"; pacSetMsg("💀 Fin del juego. Puntuación: "+pac.score); }
+  }
+}
+function drawPac(){
+  pctx.fillStyle="#0b0d20"; pctx.fillRect(0,0,COLS*T,ROWS*T);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    if(maze[r][c]){ pctx.fillStyle="#23307a"; pctx.fillRect(c*T,r*T,T,T); pctx.strokeStyle="#4d6bff"; pctx.lineWidth=2; pctx.strokeRect(c*T+3,r*T+3,T-6,T-6); }
+    else{ pctx.fillStyle="#2a2f4a"; pctx.beginPath(); pctx.arc(c*T+T/2,r*T+T/2,2,0,Math.PI*2); pctx.fill(); }
+  }
+  pac.pellets.forEach(d=>{
+    if(d.eaten)return;
+    pctx.beginPath(); pctx.arc(d.x,d.y,14,0,Math.PI*2); pctx.fillStyle="#ffcf3f"; pctx.fill(); pctx.strokeStyle="#fff"; pctx.lineWidth=2; pctx.stroke();
+    pctx.fillStyle="#111"; pctx.font="bold 17px Arial"; pctx.textAlign="center"; pctx.textBaseline="middle"; pctx.fillText(d.letter,d.x,d.y);
+  });
+  drawGhosts();
+  const p=pac.p; if(!p)return;
+  const ang=Math.atan2(p.dir.y,p.dir.x), open=p.dir.x||p.dir.y ? 0.22+Math.abs(Math.sin(Date.now()/120))*0.22 : 0.05;
+  pctx.beginPath(); pctx.moveTo(p.x,p.y); pctx.arc(p.x,p.y,T/2-4,ang+open,ang+Math.PI*2-open); pctx.closePath();
+  pctx.fillStyle="#ffe66d"; pctx.fill(); pctx.strokeStyle="#fff"; pctx.lineWidth=1.5; pctx.stroke();
+}
+$("pacStart").addEventListener("click",()=>{ if(!pac.started||pac.over)pacReset(); pac.running=!pac.running; $("pacStart").textContent=pac.running?"⏸ Pausar":"▶ Continuar"; if(pac.running)pacSetMsg("Concéntrate: analiza antes de comer y esquiva a los fantasmas."); });
+$("pacReset").addEventListener("click",pacReset);
+document.querySelectorAll(".pad button").forEach(b=>{ const press=e=>{e.preventDefault();pacTryDir(b.dataset.d);}; b.addEventListener("mousedown",press); b.addEventListener("touchstart",press,{passive:false}); });
+
+/* =========================================================
+   MÓDULO 2 — ASTEROIDES
+   ========================================================= */
+const actx=ctxOf("astCanvas");
+const AST_Q=[
+ {q:"¿Qué efecto produce el INFINITE SCROLL?",o:["Elimina los puntos de detención y te mantiene consumiendo sin decisión","Te permite organizar mejor tu tiempo","Reduce la cantidad de anuncios","Mejora la calidad de las publicaciones"],c:0},
+ {q:"¿Por qué la RECOMPENSA VARIABLE genera adicción?",o:["Porque siempre recibes el mismo premio","Porque las recompensas llegan de forma impredecible, como en tragamonedas","Porque es una moneda cambiable por dinero","Porque garantiza descuentos fijos"],c:1},
+ {q:"¿Qué caracteriza a los BOTONES ASIMÉTRICOS?",o:["Tienen el mismo tamaño y color","'Aceptar' es grande y llamativo, 'Rechazar' es pequeño y está oculto","Están diseñados para no funcionar","Usan colores brillantes por igual"],c:1},
+ {q:"¿Qué busca lograr la URGENCIA FALSA?",o:["Informarte sobre una emergencia real","Mostrarte la hora exacta","Empujarte a una decisión impulsiva mediante temporizadores artificiales","Advertirte sobre una fecha legítima"],c:2},
+ {q:"¿Qué define a una SUSCRIPCIÓN OCULTA?",o:["Un proceso donde es muy fácil suscribirse pero casi imposible cancelar","Una suscripción mensual a una revista","Un canal privado de contenido","Una membresía deportiva con beneficios claros"],c:0},
+ {q:"¿En qué consiste una AUDITORÍA DE PRIVACIDAD?",o:["Borrar todas las aplicaciones","Desconectarte completamente de internet","Revisar y ajustar sistemáticamente los permisos y configuraciones de tus apps","Cambiar tu nombre de usuario"],c:2}
+];
+const ast={running:false,started:false,score:0,lives:3,qi:0,q:null,ship:null,rocks:[],shots:[]};
+function astLoad(){
+  ast.q=AST_Q[ast.qi%AST_Q.length];
+  const order=shuffle([0,1,2,3]),L=["A","B","C","D"];
+  ast.correct=L[order.indexOf(ast.q.c)];
+  $("astQ").textContent=ast.q.q;
+  $("astOpts").innerHTML=order.map((oi,k)=>`<div class="opt"><span class="badge">${L[k]}</span><span>${ast.q.o[oi]}</span></div>`).join("");
+  ast.rocks=L.map((l,i)=>({l,x:90+i*140,y:70+Math.random()*120,dx:(Math.random()-.5)*1.6,dy:(Math.random()-.5)*1.2,r:32}));
+}
+function astReset(){
+  Object.assign(ast,{running:false,started:false,score:0,lives:3,qi:0,shots:[]});
+  ast.ship={x:300,y:400,a:0,vx:0,vy:0}; astLoad();
+  $("astScore").textContent=0; $("astLives").textContent=3; $("astMsg").textContent="Pulsa INICIAR."; drawAst();
+}
+function stepAst(){
+  const s=ast.ship;
+  if(keys.ArrowLeft)s.a-=.07; if(keys.ArrowRight)s.a+=.07;
+  if(keys.ArrowUp){s.vx+=Math.sin(s.a)*.12; s.vy-=Math.cos(s.a)*.12;}
+  s.vx*=.98; s.vy*=.98; s.x=(s.x+s.vx+600)%600; s.y=(s.y+s.vy+480)%480;
+  ast.rocks.forEach(r=>{r.x+=r.dx; r.y+=r.dy; if(r.x<35||r.x>565)r.dx*=-1; if(r.y<35||r.y>300)r.dy*=-1;});
+  for(let i=ast.shots.length-1;i>=0;i--){
+    const b=ast.shots[i]; b.x+=b.vx; b.y+=b.vy; b.life--;
+    let gone=b.x<0||b.x>600||b.y<0||b.y>480||b.life<=0;
+    if(!gone)for(let j=0;j<ast.rocks.length;j++){
+      const r=ast.rocks[j];
+      if(Math.hypot(b.x-r.x,b.y-r.y)<r.r){
+        gone=true;
+        if(r.l===ast.correct){ ast.score+=100; ast.qi++; $("astMsg").textContent="✅ Dark pattern neutralizado. +100."; astLoad(); }
+        else{ ast.lives--; $("astMsg").textContent="❌ Era la "+ast.correct+". Pierdes una vida."; if(ast.lives<=0){ast.running=false;$("astMsg").textContent="💀 Fin. Puntuación: "+ast.score;} }
+        $("astScore").textContent=ast.score; $("astLives").textContent=ast.lives; break;
+      }
+    }
+    if(gone)ast.shots.splice(i,1);
+  }
+}
+function drawAst(){
+  actx.fillStyle="#080a1e"; actx.fillRect(0,0,600,480);
+  actx.fillStyle="#fff"; for(let i=0;i<60;i++)actx.fillRect((i*127)%600,(i*211)%480,2,2);
+  const s=ast.ship; if(!s)return;
+  ast.rocks.forEach(r=>{
+    actx.beginPath(); actx.arc(r.x,r.y,r.r,0,Math.PI*2); actx.fillStyle="#7a4a21"; actx.fill(); actx.strokeStyle="#d29b5a"; actx.lineWidth=3; actx.stroke();
+    actx.fillStyle="#fff"; actx.font="bold 26px Arial"; actx.textAlign="center"; actx.textBaseline="middle"; actx.fillText(r.l,r.x,r.y);
+  });
+  actx.save(); actx.translate(s.x,s.y); actx.rotate(s.a);
+  actx.beginPath(); actx.moveTo(0,-20); actx.lineTo(-13,14); actx.lineTo(13,14); actx.closePath();
+  actx.fillStyle="#4ecdc4"; actx.fill(); actx.strokeStyle="#fff"; actx.stroke(); actx.restore();
+  actx.fillStyle="#ffe66d"; ast.shots.forEach(b=>{actx.beginPath(); actx.arc(b.x,b.y,4,0,Math.PI*2); actx.fill();});
+}
+$("astStart").onclick=()=>{ if(!ast.started||ast.lives<=0)astReset(); ast.started=true; ast.running=!ast.running; };
+$("astReset").onclick=astReset;
+
+/* =========================================================
+   MÓDULO 3 — PLATAFORMAS (20 NIVELES + ENEMIGOS + 3 TEMAS)
+   ========================================================= */
+const lctx = ctxOf("plCanvas");
+const TILE = 30;
+const TOTAL_LEVELS = 20;
+
+const PL_Q = [
+ {q:"¿Qué describe el fenómeno del FOMO?",o:["La satisfacción de terminar una serie","La ansiedad anticipatoria de perderte algo si no revisas el celular","El placer de escuchar tu playlist","La emoción de estrenar un filtro"],c:1},
+ {q:"¿Qué es una BURBUJA DE FILTRO?",o:["Una app que limpia tu dispositivo","Un entorno donde solo recibes contenido que confirma tus creencias previas","Un modo de ahorro de datos","Una herramienta para organizar fotos"],c:1},
+ {q:"¿Qué implica ejercer AUTONOMÍA DIGITAL?",o:["Usar el celular sin ningún tipo de reflexión","Decidir conscientemente para qué, cuánto y cómo usas la tecnología","No saber usar ninguna aplicación","Dejar el celular siempre con notificaciones activas"],c:1},
+ {q:"¿Qué es la FRAGMENTACIÓN DE LA ATENCIÓN?",o:["La capacidad de hacer múltiples tareas a la vez","La pérdida de capacidad de concentrarte en tareas profundas debido a estímulos constantes","Una técnica de estudio avanzada","Un tipo de meditación"],c:1},
+ {q:"¿Qué busca el CONSUMISMO IMPULSIVO en las apps?",o:["Ayudarte a ahorrar dinero","Explotar tu impulsividad mediante dark patterns para generar ventas no planificadas","Enseñarte educación financiera","Mostrarte solo productos de alta calidad"],c:1}
+];
+
+// ====== SISTEMA DE TEMAS VISUALES ======
+const THEME_NIGHT = {
+  name: "🌙 Nocturno",
+  color: "#2c3e50",
+  sky: ["#0f2027", "#203a43", "#2c5364"],
+  ground: "#3d2817",
+  grass: "#1e5128",
+  brick: "#5d4e37",
+  brickStroke: "#3d2817",
+  pipe: "#27ae60",
+  pipeLight: "#2ecc71",
+  pipeDark: "#1e8449",
+  playerHat: "#e74c3c",
+  playerOveralls: "#3498db",
+  bgDecor: "stars"
+};
+
+const THEME_HALLOWEEN = {
+  name: "🎃 Halloween",
+  color: "#6c3483",
+  sky: ["#1a0033", "#4a1486", "#8e44ad"],
+  ground: "#2c2c2c",
+  grass: "#6c3483",
+  brick: "#7d3c98",
+  brickStroke: "#4a235a",
+  pipe: "#d35400",
+  pipeLight: "#e67e22",
+  pipeDark: "#a04000",
+  playerHat: "#f39c12",
+  playerOveralls: "#6c3483",
+  bgDecor: "halloween"
+};
+
+const THEME_CLASSROOM = {
+  name: "📚 Aula de Clases",
+  color: "#1e8449",
+  sky: ["#f5deb3", "#faebd7", "#ffe4b5"],
+  ground: "#8b4513",
+  grass: "#228b22",
+  brick: "#d2691e",
+  brickStroke: "#8b4513",
+  pipe: "#1e8449",
+  pipeLight: "#27ae60",
+  pipeDark: "#145a32",
+  playerHat: "#2c3e50",
+  playerOveralls: "#c0392b",
+  bgDecor: "classroom"
+};
+
+function getTheme(level) {
+  const cycle = (level - 1) % 15;
+  if (cycle < 5) return THEME_NIGHT;
+  if (cycle < 10) return THEME_HALLOWEEN;
+  return THEME_CLASSROOM;
+}
+
+// ====== MAPAS (5 diseños base que se repiten con diferentes temas) ======
+const MAP_LAYOUTS = [
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","              B   B                 B   B                                       ","             B B B B               B B B B                                      ","                                                                                ","           B           B                   B                                    ","          B B         B B                 B B                                   ","S      B   B       B   B       B       B   B               a  b  c  d          ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B   B   B   B   B   B   B   B   B                                   ","       B B B B B B B B B B B B B B B B B B B                                    ","                                                                                ","      B                       B                       B                         ","     B B                     B B                     B B                        ","S  B   B       B   B       B   B       B   B       B   B   a  b  c  d          ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                B   B                           ","                                               B B B B                          ","                                          B   B                                 ","                                         B B B                                  ","                                    B   B                                       ","                                   B B B                                        ","S                             B   B                          a  b  c  d         ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","        B   B               B   B               B   B                           ","       B B B B             B B B B             B B B B                          ","                                                                                ","      B       B           B       B           B       B                         ","     B B     B B         B B     B B         B B     B B                        ","S  B   B   B   B       B   B   B   B       B   B   B   B   a  b  c  d          ","################################################################################"],
+  ["                                                                                ","                                                                                ","                                                                                ","                                                                                ","                                                                                ","           B             B             B             B                          ","          B B           B B           B B           B B                         ","         B   B         B   B         B   B         B   B                        ","        B     B       B     B       B     B       B     B                       ","S     B       B     B       B     B       B     B       B   a  b  c  d         ","################################################################################"]
+];
+
+// Posiciones de enemigos por mapa (x en píxeles, plataformaY = fila donde caminan)
+const MAP_ENEMIES = [
+  [{x: 400, y: 9*T, range: 120, speed: 1.2}, {x: 900, y: 9*T, range: 150, speed: 1.0}, {x: 1400, y: 9*T, range: 100, speed: 1.3}],
+  [{x: 350, y: 9*T, range: 100, speed: 1.1}, {x: 800, y: 9*T, range: 130, speed: 1.2}, {x: 1300, y: 9*T, range: 110, speed: 1.0}],
+  [{x: 500, y: 9*T, range: 140, speed: 1.3}, {x: 1100, y: 9*T, range: 120, speed: 1.1}, {x: 1700, y: 9*T, range: 100, speed: 1.2}],
+  [{x: 450, y: 9*T, range: 110, speed: 1.0}, {x: 950, y: 9*T, range: 130, speed: 1.2}, {x: 1500, y: 9*T, range: 120, speed: 1.1}],
+  [{x: 600, y: 9*T, range: 150, speed: 1.2}, {x: 1200, y: 9*T, range: 100, speed: 1.3}, {x: 1800, y: 9*T, range: 130, speed: 1.0}]
+];
+
+const pl = {
+  running:false, started:false, score:0, lives:3, level:1,
+  tiles:[], exits:[], enemies:[], correctExit:"A",
+  p:null, cam:0, frame:0, theme:THEME_NIGHT
+};
+
+function plParseMap(mapIdx){
+  const raw = MAP_LAYOUTS[mapIdx];
+  pl.tiles = []; pl.exits = []; pl.enemies = [];
+  let spawnX = 60, spawnY = 300, exitIdx = 0;
+  
+  for(let r=0; r<raw.length; r++){
+    for(let c=0; c<raw[r].length; c++){
+      const char = raw[r][c], x = c * TILE, y = r * TILE;
+      if(char === '#') pl.tiles.push({x, y, w:TILE, h:TILE, type:'ground'});
+      else if(char === 'B') pl.tiles.push({x, y, w:TILE, h:TILE, type:'brick'});
+      else if(char === 'S') { spawnX = x; spawnY = y; }
+      else if('abcd'.includes(char)){
+        const letterMap = {'a':'A', 'b':'B', 'c':'C', 'd':'D'};
+        pl.exits.push({x: x, y: y, w: TILE, h: TILE*2, letter: letterMap[char], id: exitIdx++});
+        pl.tiles.push({x: x, y: y + TILE, w: TILE, h: TILE, type:'ground'});
+      }
+    }
+  }
+  
+  // Generar enemigos del mapa actual
+  const enemyDefs = MAP_ENEMIES[mapIdx];
+  enemyDefs.forEach(def => {
+    pl.enemies.push({
+      x: def.x, y: def.y - 28,
+      w: 28, h: 28,
+      startX: def.x,
+      range: def.range,
+      vx: def.speed,
+      alive: true
+    });
+  });
+  
+  pl.p = {x: spawnX, y: spawnY, w: 24, h: 36, vx: 0, vy: 0, onGround: false, facing: 1, invulnerable: 0};
+  pl.cam = 0;
+}
+
+function plLoadQuestion(){
+  const q = PL_Q[(pl.level - 1) % PL_Q.length];
+  const order = shuffle([0,1,2,3]), letters = ["A","B","C","D"];
+  pl.correctExit = letters[order.indexOf(q.c)];
+  $("plQ").textContent = q.q;
+  $("plOpts").innerHTML = order.map((oi, k) => `<div class="opt"><span class="badge">${letters[k]}</span><span>${q.o[oi]}</span></div>`).join("");
+  $("plLevel").textContent = pl.level;
+  
+  pl.theme = getTheme(pl.level);
+  $("plTheme").textContent = pl.theme.name;
+  $("plTheme").style.background = pl.theme.color;
+}
+
+function plReset(){
+  Object.assign(pl, {running:false, started:false, score:0, lives:3, level:1});
+  plParseMap(0);
+  plLoadQuestion();
+  $("plScore").textContent = 0; $("plLives").textContent = 3;
+  $("plMsg").textContent = "Pulsa INICIAR. 20 niveles te esperan con 3 temas distintos.";
+  drawPl();
+}
+
+function checkCollision(rect1, rect2){
+  return rect1.x < rect2.x + rect2.w && rect1.x + rect1.w > rect2.x && rect1.y < rect2.y + rect2.h && rect1.y + rect1.h > rect2.y;
+}
+
+function stepEnemies(){
+  pl.enemies.forEach(e => {
+    if(!e.alive) return;
+    e.x += e.vx;
+    
+    // Detectar borde de plataforma o límite de rango
+    const feetY = e.y + e.h + 2;
+    const checkX = e.vx > 0 ? e.x + e.w + 2 : e.x - 2;
+    
+    // Verificar si hay suelo debajo del próximo paso
+    let hasFloor = false;
+    for(let t of pl.tiles){
+      if(checkX >= t.x && checkX <= t.x + t.w && feetY >= t.y && feetY <= t.y + t.h){
+        hasFloor = true; break;
+      }
+    }
+    
+    // Rebotar si no hay suelo o si llegó al límite de rango
+    if(!hasFloor || Math.abs(e.x - e.startX) > e.range){
+      e.vx *= -1;
+      e.x += e.vx * 2;
+    }
+  });
+}
+
+function checkEnemyCollision(){
+  if(pl.p.invulnerable > 0) return false;
+  for(let e of pl.enemies){
+    if(!e.alive) continue;
+    if(checkCollision(pl.p, e)){
+      pl.lives--;
+      $("plLives").textContent = pl.lives;
+      pl.p.invulnerable = 90;
+      if(pl.lives <= 0){
+        pl.running = false;
+        $("plMsg").textContent = "💀 ¡Un enemigo te derrotó! Fin del juego. Puntuación: " + pl.score;
+        return true;
+      }
+      $("plMsg").textContent = "👾 ¡Te tocó un enemigo! −1 vida. Te quedan " + pl.lives + ".";
+      return true;
+    }
+  }
+  return false;
+}
+
+function stepPl(){
+  pl.frame++;
+  const p = pl.p;
+  const ACCEL = 0.4, FRICTION = 0.85, MAX_SPEED = 5.5, GRAVITY = 0.5, JUMP_FORCE = -11;
+  
+  if(keys.ArrowLeft){ p.vx -= ACCEL; p.facing = -1; }
+  if(keys.ArrowRight){ p.vx += ACCEL; p.facing = 1; }
+  p.vx *= FRICTION;
+  if(Math.abs(p.vx) < 0.1) p.vx = 0;
+  if(p.vx > MAX_SPEED) p.vx = MAX_SPEED;
+  if(p.vx < -MAX_SPEED) p.vx = -MAX_SPEED;
+  
+  if((keys.ArrowUp || keys[" "]) && p.onGround){ p.vy = JUMP_FORCE; p.onGround = false; }
+  p.vy += GRAVITY; if(p.vy > 12) p.vy = 12;
+  
+  p.x += p.vx;
+  for(let t of pl.tiles){ if(checkCollision(p, t)){ if(p.vx > 0) p.x = t.x - p.w; else if(p.vx < 0) p.x = t.x + t.w; p.vx = 0; } }
+  
+  p.y += p.vy; p.onGround = false;
+  for(let t of pl.tiles){
+    if(checkCollision(p, t)){
+      if(p.vy > 0){ p.y = t.y - p.h; p.onGround = true; p.vy = 0; }
+      else if(p.vy < 0){ p.y = t.y + t.h; p.vy = 0; }
+    }
+  }
+  if(p.x < 0) p.x = 0;
+  
+  // Enemigos
+  stepEnemies();
+  if(checkEnemyCollision() && pl.lives <= 0) return;
+  
+  // Caer al vacío
+  if(p.y > 500){
+    pl.lives--; $("plLives").textContent = pl.lives;
+    if(pl.lives <= 0){ pl.running = false; $("plMsg").textContent = "💀 Fin del juego. Puntuación: " + pl.score; return; }
+    plParseMap((pl.level - 1) % MAP_LAYOUTS.length);
+    $("plMsg").textContent = "¡Caíste! Te quedan " + pl.lives + " vidas.";
+  }
+  
+  // ====== COLISIÓN ESTRICTA CON TUBERÍAS (AABB) ======
+  if(p.invulnerable <= 0){
+    for(let ex of pl.exits){
+      // Hitbox estricto de la parte superior de la tubería
+      const pipeHitbox = {
+        x: ex.x + 3,
+        y: ex.y,
+        w: ex.w - 6,
+        h: 18
+      };
+      
+      // El jugador debe estar DENTRO del hitbox (colisión AABB real)
+      if(checkCollision(p, pipeHitbox)){
+        p.invulnerable = 60;
+        if(ex.letter === pl.correctExit){
+          pl.score += 100; $("plScore").textContent = pl.score;
+          $("plMsg").textContent = "✅ ¡Correcto! Entraste en la " + ex.letter + ". +100 puntos.";
+          if(pl.level >= TOTAL_LEVELS){
+            pl.running = false;
+            $("plMsg").textContent = "🏆 ¡Completaste los 20 niveles! Puntuación final: " + pl.score;
+            return;
+          }
+          pl.level++;
+          plParseMap((pl.level - 1) % MAP_LAYOUTS.length);
+          plLoadQuestion();
+        } else {
+          pl.lives--; $("plLives").textContent = pl.lives;
+          $("plMsg").textContent = "❌ Era la " + pl.correctExit + ". Entraste en la " + ex.letter + ". −1 vida.";
+          if(pl.lives <= 0){ pl.running = false; $("plMsg").textContent = "💀 Fin del juego. Puntuación: " + pl.score; return; }
+          plParseMap((pl.level - 1) % MAP_LAYOUTS.length);
+        }
+        break;
+      }
+    }
+  }
+  if(p.invulnerable > 0) p.invulnerable--;
+  
+  const targetCam = p.x - 250;
+  pl.cam += (targetCam - pl.cam) * 0.1;
+  if(pl.cam < 0) pl.cam = 0;
+  if(pl.cam > (80 * TILE) - 800) pl.cam = (80 * TILE) - 800;
+}
+
+// ====== DIBUJO CON TEMAS ======
+function drawBackground(){
+  const theme = pl.theme;
+  const grad = lctx.createLinearGradient(0, 0, 0, 450);
+  grad.addColorStop(0, theme.sky[0]);
+  grad.addColorStop(0.5, theme.sky[1]);
+  grad.addColorStop(1, theme.sky[2]);
+  lctx.fillStyle = grad;
+  lctx.fillRect(0, 0, 800, 450);
+  
+  if(theme.bgDecor === "stars"){
+    // Estrellas titilantes + Luna
+    lctx.fillStyle = "#fff";
+    for(let i=0; i<80; i++){
+      const x = (i * 97 + pl.frame * 0.05) % 800;
+      const y = (i * 53) % 300;
+      const twinkle = Math.sin(pl.frame * 0.05 + i) * 0.5 + 0.5;
+      lctx.globalAlpha = 0.3 + twinkle * 0.7;
+      lctx.fillRect(x, y, 2, 2);
+    }
+    lctx.globalAlpha = 1;
+    // Luna
+    const moonX = 650 - pl.cam * 0.1;
+    lctx.beginPath();
+    lctx.arc(moonX, 80, 35, 0, Math.PI*2);
+    lctx.fillStyle = "#f4e5c2";
+    lctx.fill();
+    lctx.beginPath();
+    lctx.arc(moonX + 10, 75, 30, 0, Math.PI*2);
+    lctx.fillStyle = theme.sky[0];
+    lctx.fill();
+  }
+  else if(theme.bgDecor === "halloween"){
+    // Murciélagos volando
+    lctx.fillStyle = "#000";
+    for(let i=0; i<5; i++){
+      const bx = (i * 200 + pl.frame * 0.8) % 1000 - 100;
+      const by = 60 + Math.sin(pl.frame * 0.05 + i) * 20 + i * 30;
+      const wingFlap = Math.sin(pl.frame * 0.3 + i) * 8;
+      lctx.beginPath();
+      lctx.ellipse(bx, by, 12, 6, 0, 0, Math.PI*2);
+      lctx.fill();
+      lctx.beginPath();
+      lctx.moveTo(bx - 12, by);
+      lctx.lineTo(bx - 25, by - wingFlap);
+      lctx.lineTo(bx - 15, by + 3);
+      lctx.fill();
+      lctx.beginPath();
+      lctx.moveTo(bx + 12, by);
+      lctx.lineTo(bx + 25, by - wingFlap);
+      lctx.lineTo(bx + 15, by + 3);
+      lctx.fill();
+    }
+    // Calabazas en el fondo
+    for(let i=0; i<3; i++){
+      const px = 150 + i * 250 - pl.cam * 0.2;
+      const py = 380;
+      lctx.beginPath();
+      lctx.arc(px, py, 20, 0, Math.PI*2);
+      lctx.fillStyle = "#d35400";
+      lctx.fill();
+      lctx.fillStyle = "#f39c12";
+      lctx.fillRect(px - 8, py - 5, 4, 4);
+      lctx.fillRect(px + 4, py - 5, 4, 4);
+      lctx.beginPath();
+      lctx.moveTo(px - 6, py + 5);
+      lctx.lineTo(px, py + 8);
+      lctx.lineTo(px + 6, py + 5);
+      lctx.stroke();
+    }
+    // Niebla baja
+    lctx.fillStyle = "rgba(155, 89, 182, 0.15)";
+    lctx.fillRect(0, 380, 800, 70);
+  }
+  else if(theme.bgDecor === "classroom"){
+    // Pizarrón verde al fondo
+    lctx.fillStyle = "#1e5128";
+    lctx.fillRect(100 - pl.cam * 0.1, 50, 600, 200);
+    lctx.strokeStyle = "#8b4513";
+    lctx.lineWidth = 6;
+    lctx.strokeRect(100 - pl.cam * 0.1, 50, 600, 200);
+    // Tiza (texto en el pizarrón)
+    lctx.fillStyle = "rgba(255,255,255,0.7)";
+    lctx.font = "bold 18px Arial";
+    lctx.textAlign = "center";
+    lctx.fillText("Soberanía Digital", 400 - pl.cam * 0.1, 100);
+    lctx.font = "14px Arial";
+    lctx.fillText("Nivel " + pl.level + " / 20", 400 - pl.cam * 0.1, 130);
+    // Libros apilados decorativos
+    for(let i=0; i<4; i++){
+      const bx = 50 + i * 200 - pl.cam * 0.15;
+      const by = 300;
+      const colors = ["#c0392b", "#2980b9", "#27ae60", "#f39c12"];
+      for(let j=0; j<3; j++){
+        lctx.fillStyle = colors[(i+j) % 4];
+        lctx.fillRect(bx, by - j * 12, 40, 10);
+        lctx.strokeStyle = "#000";
+        lctx.lineWidth = 1;
+        lctx.strokeRect(bx, by - j * 12, 40, 10);
+      }
+    }
+  }
+}
+
+function drawTiles(){
+  const theme = pl.theme;
+  pl.tiles.forEach(t => {
+    if(t.type === 'ground'){
+      lctx.fillStyle = theme.ground;
+      lctx.fillRect(t.x, t.y, t.w, t.h);
+      lctx.fillStyle = theme.grass;
+      lctx.fillRect(t.x, t.y, t.w, 8);
+      lctx.fillStyle = "rgba(0,0,0,0.2)";
+      lctx.fillRect(t.x+5, t.y+15, 8, 8);
+      lctx.fillRect(t.x+18, t.y+20, 6, 6);
+    } else if(t.type === 'brick'){
+      lctx.fillStyle = theme.brick;
+      lctx.fillRect(t.x, t.y, t.w, t.h);
+      lctx.strokeStyle = theme.brickStroke;
+      lctx.lineWidth = 2;
+      lctx.strokeRect(t.x, t.y, t.w, t.h);
+      lctx.beginPath();
+      lctx.moveTo(t.x, t.y + t.h/2); lctx.lineTo(t.x + t.w, t.y + t.h/2);
+      lctx.moveTo(t.x + t.w/2, t.y); lctx.lineTo(t.x + t.w/2, t.y + t.h/2);
+      lctx.moveTo(t.x + t.w/4, t.y + t.h/2); lctx.lineTo(t.x + t.w/4, t.y + t.h);
+      lctx.moveTo(t.x + t.w*0.75, t.y + t.h/2); lctx.lineTo(t.x + t.w*0.75, t.y + t.h);
+      lctx.stroke();
+    }
+  });
+}
+
+function drawExits(){
+  const theme = pl.theme;
+  pl.exits.forEach(ex => {
+    // Cuerpo de la tubería
+    lctx.fillStyle = theme.pipe;
+    lctx.fillRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
+    // Borde superior
+    lctx.fillStyle = theme.pipeLight;
+    lctx.fillRect(ex.x, ex.y, ex.w, 12);
+    lctx.strokeStyle = theme.pipeDark;
+    lctx.lineWidth = 2;
+    lctx.strokeRect(ex.x, ex.y, ex.w, 12);
+    lctx.strokeRect(ex.x + 2, ex.y + 10, ex.w - 4, ex.h - 10);
+    // Letra
+    lctx.fillStyle = "#fff";
+    lctx.font = "bold 16px Arial";
+    lctx.textAlign = "center";
+    lctx.textBaseline = "middle";
+    lctx.fillText(ex.letter, ex.x + ex.w/2, ex.y + 6);
+  });
+}
+
+function drawEnemies(){
+  pl.enemies.forEach(e => {
+    if(!e.alive) return;
+    lctx.save();
+    lctx.translate(e.x + e.w/2, e.y + e.h/2);
+    
+    // Cuerpo del enemigo (tipo Goomba)
+    lctx.fillStyle = "#8b4513";
+    lctx.beginPath();
+    lctx.arc(0, -2, 12, Math.PI, 0);
+    lctx.lineTo(12, 10);
+    lctx.lineTo(-12, 10);
+    lctx.closePath();
+    lctx.fill();
+    lctx.strokeStyle = "#5d2f0a";
+    lctx.lineWidth = 1.5;
+    lctx.stroke();
+    
+    // Ojos enojados
+    lctx.fillStyle = "#fff";
+    lctx.beginPath(); lctx.arc(-5, -3, 3, 0, Math.PI*2); lctx.fill();
+    lctx.beginPath(); lctx.arc(5, -3, 3, 0, Math.PI*2); lctx.fill();
+    lctx.fillStyle = "#000";
+    lctx.beginPath(); lctx.arc(-5, -3, 1.5, 0, Math.PI*2); lctx.fill();
+    lctx.beginPath(); lctx.arc(5, -3, 1.5, 0, Math.PI*2); lctx.fill();
+    
+    // Cejas enojadas
+    lctx.strokeStyle = "#000";
+    lctx.lineWidth = 2;
+    lctx.beginPath();
+    lctx.moveTo(-8, -7); lctx.lineTo(-3, -5);
+    lctx.moveTo(8, -7); lctx.lineTo(3, -5);
+    lctx.stroke();
+    
+    // Pies
+    lctx.fillStyle = "#2c3e50";
+    const walkOffset = Math.sin(pl.frame * 0.2) * 2;
+    lctx.fillRect(-10, 10, 7, 4 + walkOffset);
+    lctx.fillRect(3, 10, 7, 4 - walkOffset);
+    
+    lctx.restore();
+  });
+}
+
+function drawPlayer(){
+  const theme = pl.theme;
+  const p = pl.p;
+  if(p.invulnerable > 0 && Math.floor(pl.frame / 4) % 2 === 0) return;
+  lctx.save();
+  lctx.translate(p.x + p.w/2, p.y + p.h/2);
+  if(p.facing === -1) lctx.scale(-1, 1);
+  lctx.fillStyle = theme.playerHat;
+  lctx.fillRect(-12, -18, 24, 10);
+  lctx.fillRect(-8, -22, 16, 6);
+  lctx.fillStyle = "#f1c40f";
+  lctx.fillRect(-10, -8, 20, 12);
+  lctx.fillStyle = "#2c3e50";
+  lctx.fillRect(2, -4, 8, 3);
+  lctx.fillRect(4, -2, 3, 3);
+  lctx.fillStyle = theme.playerOveralls;
+  lctx.fillRect(-10, 4, 20, 14);
+  lctx.fillStyle = "#f1c40f";
+  lctx.fillRect(-6, 6, 4, 4);
+  lctx.fillRect(2, 6, 4, 4);
+  lctx.restore();
+}
+
+function drawPl(){
+  drawBackground();
+  lctx.save();
+  lctx.translate(-Math.floor(pl.cam), 0);
+  drawTiles();
+  drawExits();
+  drawEnemies();
+  drawPlayer();
+  lctx.restore();
+}
+
+$("plStart").onclick = () => { if(!pl.started || pl.lives <= 0) plReset(); pl.started = true; pl.running = !pl.running; $("plStart").textContent = pl.running ? "⏸ Pausar" : "▶ Continuar"; };
+$("plReset").onclick = plReset;
+document.querySelectorAll("#m3 .pad button").forEach(b => {
+  const press = e => { e.preventDefault(); const d = b.dataset.d; if(d === 'left') keys.ArrowLeft = true; if(d === 'right') keys.ArrowRight = true; if(d === 'up') keys.ArrowUp = true; };
+  const release = e => { e.preventDefault(); const d = b.dataset.d; if(d === 'left') keys.ArrowLeft = false; if(d === 'right') keys.ArrowRight = false; if(d === 'up') keys.ArrowUp = false; };
+  b.addEventListener("mousedown", press); b.addEventListener("touchstart", press, {passive:false});
+  b.addEventListener("mouseup", release); b.addEventListener("touchend", release); b.addEventListener("mouseleave", release);
+});
+
+/* =========================================================
+   MÓDULO 4 — DILEMAS ÉTICOS
+   ========================================================= */
+const RP=[
+ {t:"Tu hermano de 14 años pasa más de 6 horas diarias en TikTok. Cuando le planteas reducir el uso, responde: 'Todos mis amigos están ahí, si no estoy me pierdo de todo'.",
+  o:["Asumir que es normal y no intervenir","Prohibirle el celular de forma tajante","Dialogar, pactar juntos un límite de 1-2 horas y proponer actividades alternativas"],c:2,
+  f:"La opción correcta combina consumo consciente y desconexión intencional. Dialogar y ofrecer alternativas es más efectivo que prohibir o ignorar."},
+ {t:"Recibes una notificación de MercadoLibre: '¡Oferta relámpago! Solo 2 horas para comprar lo que viste ayer con 30% de descuento'. En realidad no necesitas el producto.",
+  o:["Comprar antes de que se acabe el tiempo","Cerrar la notificación y aplicar la regla de las 24 horas antes de decidir","Eliminar todas las apps de comercio de tu celular"],c:1,
+  f:"Es un caso clásico de URGENCIA FALSA. Esperar 24 horas rompe el impulso y te permite evaluar si realmente lo necesitas."},
+ {t:"Una amiga te muestra orgullosa un filtro de Instagram que 'la hace ver como modelo', pero notas que distorsiona por completo sus rasgos naturales.",
+  o:["Callar para no incomodarla y decirle que se ve bien","Decirle de forma directa que el filtro es horrible y se ve ridícula","Decirle con honestidad y cariño que es hermosa sin filtro, y explicarle cómo afectan los filtros a la autoestima"],c:2,
+  f:"La respuesta correcta equilibra honestidad y empatía. Combates la comparación social y educas (nivel 5 de soberanía digital)."},
+ {t:"Estás en una cena familiar y todos están mirando el celular en lugar de conversar. Tú también sientes la tentación de revisar el tuyo.",
+  o:["Sumarte y revisar tu celular también","Guardar tu celular y proponer una 'cesta de teléfonos' durante la cena","Reclamarles enfadado que dejen los celulares"],c:1,
+  f:"Ejercer desconexión intencional y liderar con el ejemplo protege las relaciones presenciales sin generar confrontación."},
+ {t:"Tu abuela de 65 años te pide ayuda con su celular nuevo. Notas que tiene todas las notificaciones activadas, permisos de ubicación permanente y publicidad personalizada encendida.",
+  o:["Enseñarle solo a usar WhatsApp y dejarlo así","Explicarle con paciencia los riesgos y ayudarla a configurar su privacidad","Quitarle el celular porque es peligroso para ella"],c:1,
+  f:"Una auditoría de privacidad acompañada de educación (niveles 3 y 5) protege a una persona vulnerable sin excluirla digitalmente."},
+ {t:"Te das cuenta de que solo consumes noticias a través de Facebook, y el algoritmo te muestra únicamente contenido que confirma lo que ya piensas. Nunca ves opiniones diferentes.",
+  o:["Dejarlo así, porque te evitas discusiones incómodas","Buscar fuentes diversas, verificar información y seguir cuentas con perspectivas distintas","Dejar de informarte por completo"],c:1,
+  f:"Estás atrapado en una BURBUJA DE FILTRO. Triangular fuentes y diversificar tu dieta informativa protege tu pensamiento crítico y tu capacidad de deliberar."}
+];
+const rp={i:0,score:0,done:false};
+function rpRender(){
+  if(rp.i>=RP.length){
+    $("rpBox").innerHTML=`<div class="card"><h3>🏆 Recorrido completado</h3><p>Puntuación: ${rp.score} / ${RP.length*20}. Ahora redacta tu Decálogo de 10 principios y tu Plan de Bienestar Digital personal.</p></div>`;
+    rp.done=true;return;
+  }
+  const s=RP[rp.i];
+  $("rpInfo").textContent=(rp.i+1)+"/"+RP.length+" decisiones";
+  $("rpBox").innerHTML=`<div class="card"><h3>Caso ${rp.i+1}: ${s.t}</h3>`+ s.o.map((o,i)=>`<button class="choice" data-i="${i}">${o}</button>`).join("")+`<div id="rpFb"></div></div>`;
+  $("rpBox").querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,ok=i===s.c;
+    $("rpBox").querySelectorAll(".choice").forEach((x,k)=>{ x.disabled=true; if(k===s.c)x.classList.add("ok"); else if(k===i)x.classList.add("no"); });
+    if(ok){rp.score+=20;$("rpScore").textContent=rp.score;}
+    $("rpFb").innerHTML=`<div class="fb"><b>${ok?"✅ Decisión acertada.":"💭 Analicemos la situación:"}</b> ${s.f}</div><button class="btn" id="rpNext">${rp.i===RP.length-1?"Ver resultado final →":"Siguiente caso →"}</button>`;
+    $("rpNext").onclick=()=>{rp.i++;rpRender();};
+  });
+}
+function rpReset(){rp.i=0;rp.score=0;rp.done=false;$("rpScore").textContent=0;rpRender();}
+$("rpStart").onclick=()=>{if(rp.done||rp.i>0)rpReset();else rpRender();};
+$("rpReset").onclick=rpReset;
+
+/* =========================================================
+   TECLADO + BUCLE ÚNICO + ARRANQUE
+   ========================================================= */
+window.addEventListener("keydown",e=>{
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)){ if(active!==4)e.preventDefault(); }
+  keys[e.key]=true;
+  if(active===1&&pac.running){
+    const map={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"};
+    if(map[e.key])pacTryDir(map[e.key]);
+  }
+  if(active===2&&ast.running&&e.key===" "&&!e.repeat){
+    const s=ast.ship; ast.shots.push({x:s.x,y:s.y,vx:Math.sin(s.a)*8,vy:-Math.cos(s.a)*8,life:70});
+  }
+});
+window.addEventListener("keyup",e=>{keys[e.key]=false;});
+window.addEventListener("blur",()=>{for(const k in keys)keys[k]=false;});
+
+function loop(){
+  if(active===1&&pac.started){ if(pac.running)stepPac(); drawPac(); }
+  if(active===2&&ast.started){ if(ast.running)stepAst(); drawAst(); }
+  if(active===3&&pl.started){ if(pl.running)stepPl(); drawPl(); }
+  requestAnimationFrame(loop);
+}
+
+pacReset(); astReset(); plReset(); rpReset();
+requestAnimationFrame(loop);
+</script>
+</body>
